@@ -3,6 +3,8 @@ import CustomEase from "https://cdn.skypack.dev/gsap/CustomEase";
 import ScrollTrigger from "https://cdn.skypack.dev/gsap/ScrollTrigger";
 import studioFreightlenis from "https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/+esm";
 
+console.log("test vanaf jordi macbook haha");
+
 gsap.registerPlugin(CustomEase, ScrollTrigger);
 
 CustomEase.create("custom", "M0,0 C0.504,0 0.01,1 1,1");
