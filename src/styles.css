@@ -1,0 +1,11 @@
+:root {
+    --cubic-default: cubic-bezier(0.504, 0.01, 0.01, 1);
+}
+
+.nav_dropdown-menu {
+    display: none;
+    visibility: hidden;
+    overflow: hidden;
+    transform: translateY(10%);
+    opacity: 0;
+}
