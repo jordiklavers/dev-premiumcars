@@ -1,65 +1,150 @@
 :root {
-    --cubic-default: cubic-bezier(0.504, 0.01, 0.01, 1);
+  --cubic-default: cubic-bezier(0.504, 0.01, 0.01, 1);
+}
+
+/* ------------------------- Theme Colors -------------------------------------------
+:root,
+[data-theme="light"],
+[data-theme="dark"] [data-theme="invert"] {
+  --_theme---background: var(--_swatch---mineral-white--100);
+  --_theme---background-secondary: var(--_swatch---mineral-white--80);
+  --_theme---background-tertiary: var(--_swatch---mineral-white--60);
+  --_theme---content: var(--_swatch---techno-violet--80);
+  --_theme---content-secondary: var(--_swatch---techno-violet--60);
+  --_theme---border: var(--_swatch---mineral-white--80);
+  --_theme---selection-background: var(--_swatch---dakar-yellow--50);
+  --_theme---selection-content: var(--_swatch---dark-100);
+  --_theme---btn--background: var(--_swatch---techno-violet--100);
+  --_theme---btn--content: var(--_swatch---mineral-white--100);
+}
+
+[data-theme="dark"],
+[data-theme="invert"],
+[data-theme="light"] [data-theme="invert"] {
+  --_theme---background: var(--_swatch---techno-violet--100);
+  --_theme---background-secondary: var(--_swatch---techno-violet--80);
+  --_theme---background-tertiary: var(--_swatch---techno-violet--60);
+  --_theme---content: var(--_swatch---mineral-white--100);
+  --_theme---content-secondary: var(--_swatch---mineral-white--80);
+  --_theme---border: var(--_swatch---techno-violet--60);
+  --_theme---selection-background: var(--_swatch---dakar-yellow--50);
+  --_theme---selection-content: var(--_swatch---light-0);
+  --_theme---btn--background: var(--_swatch---mineral-white--100);
+  --_theme---btn--content: var(--_swatch---techno-violet--100);
+} */
+
+/* ------------------------------ NAV ------------------------------ */
+.nav {
+  --nav-transition-duration: 0.8s;
+}
+
+.nav-primary_container {
+  transition: padding var(--nav-transition-duration) var(--cubic-default), 
+              color var(--nav-transition-duration) var(--cubic-default);
+}
+
+.nav-secondary_container {
+  transition: color var(--nav-transition-duration) var(--cubic-default), border-top-color var(--nav-transition-duration) var(--cubic-default);
+}
+
+.nav .btn_background {
+  transition: background-color var(--nav-transition-duration) var(--cubic-default);
+}
+
+.nav .btn {
+  transition: color var(--nav-transition-duration) var(--cubic-default);
+}
+
+.nav-bg {
+  transform: scaleY(0);
+  background-color: var(--_swatch---mineral-white--100);
+  transform-origin: top;
+  transition: transform var(--nav-transition-duration) var(--cubic-default);
+}
+
+[data-scrolling-started="true"] .nav-bg {
+  transform: scaleY(1);
+}
+
+[data-scrolling-direction="down"] .nav-primary_container {
+  padding: 0.5em var(--container-padding);
+}
+
+[data-scrolling-started="true"] .nav-secondary_container {
+  border-top-color: rgba(48, 16, 107, 0.2);
+}
+
+[data-scrolling-started="true"] .nav-primary, [data-scrolling-started="true"] .nav-secondary {
+  color: var(--_swatch---techno-violet--100);
+}
+
+[data-scrolling-started="true"] .nav .btn_background {
+    background-color: var(--_swatch---techno-violet--100);
+}
+
+[data-scrolling-started="true"] .nav .btn {
+    color: var(--_swatch---mineral-white--100);
 }
 
 .nav_dropdown-menu {
-    display: none;
-    visibility: hidden;
-    overflow: hidden;
-    transform: translateY(10%);
-    opacity: 0;
+  display: none;
+  visibility: hidden;
+  overflow: hidden;
+  transform: translateY(10%);
+  opacity: 0;
 }
 
 /* ------------------------------ SWIPER ------------------------------ */
 
 .swiper {
-    border-radius: 0.25em !important;
+  border-radius: 0.25em !important;
 }
 
 .swiper-wrapper {
-    transition-timing-function: var(--cubic-default) !important;
+  transition-timing-function: var(--cubic-default) !important;
+  transition-duration: 500ms !important;
 }
 
 [data-swiper-total] {
-    opacity: 0.4;
+  opacity: 0.4;
 }
 
 .swiper-pagination {
-    position: relative !important;
+  position: relative !important;
 }
 
 .swiper-pagination-bullet {
-    background: var(--_theme---background-tertiary) !important;
+  background: var(--_theme---background-tertiary) !important;
 }
 
 .swiper-pagination-bullet.swiper-pagination-bullet-active {
-    background: var(--_swatch---dakar-yellow--50) !important;
+  background: var(--_swatch---dakar-yellow--50) !important;
 }
 
 /* Swiper Buttons */
 
-.swiper-pagination-button .icon-1, 
+.swiper-pagination-button .icon-1,
 .swiper-pagination-button .icon-2,
 .swiper-pagination-button .swiper-pagination-button-bg {
-    transition: transform 0.5s var(--cubic-default);
+  transition: transform 0.5s var(--cubic-default);
 }
 
 .swiper-pagination-button:hover .swiper-pagination-button-bg {
-    transform: scale(0.85);
+  transform: scale(0.85);
 }
 
 .swiper-pagination-button:hover .icon-1 {
-    transform: translateX(-100%);
+  transform: translateX(-100%);
 }
 
 .swiper-pagination-button:hover .icon-2 {
-    transform: translateX(0%);
+  transform: translateX(0%);
 }
 
 .swiper-pagination-button.is-second:hover .icon-1 {
-    transform: translateX(100%);
+  transform: translateX(100%);
 }
 
 .swiper-pagination-button.is-second:hover .icon-2 {
-    transform: translateX(0%);
+  transform: translateX(0%);
 }
