@@ -17,8 +17,10 @@ initFunctions();
 
 function initFunctions() {
   document.addEventListener("DOMContentLoaded", () => {
+    initLenis();
     initNavDropdown();
     initDynamicCurrentTime();
+    initSwipers();
   });
 }
 
@@ -126,3 +128,63 @@ function initDynamicCurrentTime() {
   updateTime();
   setInterval(updateTime, 1000);
 }
+
+function initSwipers() {
+  const swiper = new Swiper('.swiper', {
+    loop: true,
+    speed: 750,
+    slidesPerView: 3,
+    spaceBetween: 24,
+    createElements: true,
+    
+    // Pagination
+    pagination: {
+      el: "[data-swiper-pagination]",
+      clickable: true,
+    },
+
+    navigation: {
+      nextEl: "[data-swiper-next]",
+      prevEl: "[data-swiper-prev]",
+    },
+    
+    on: {
+      init: function() {
+        updateSlideInfo(this);
+      },
+      slideChange: function() {
+        updateSlideInfo(this);
+      }
+    }
+  });
+  
+  // Helper function to update slide information
+  function updateSlideInfo(swiper) {
+    const currentSlide = swiper.realIndex + 1;
+    
+    // Get the actual number of slides (not duplicated ones)
+    const slideElements = document.querySelectorAll('.swiper-slide:not(.swiper-slide-duplicate)');
+    const totalSlides = slideElements.length || 5; // Fallback to 5 if can't determine
+    
+    // Format numbers with leading zeros
+    const formatNumber = (num) => num.toString().padStart(2, '0');
+    const formattedCurrentSlide = formatNumber(currentSlide);
+    const formattedTotalSlides = formatNumber(totalSlides);
+    
+    // Update DOM elements if they exist
+    const currentElement = document.querySelector('[data-swiper-current]');
+    const totalElement = document.querySelector('[data-swiper-total]');
+    
+    if (currentElement) {
+      currentElement.textContent = formattedCurrentSlide;
+    }
+    
+    if (totalElement) {
+      totalElement.textContent = formattedTotalSlides;
+    }
+    
+    // Log for debugging
+    console.log(`Slide ${formattedCurrentSlide} of ${formattedTotalSlides}`);
+  }
+}
+
