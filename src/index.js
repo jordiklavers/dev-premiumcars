@@ -190,4 +190,3 @@ function initSwipers() {
   }
 }
 
-console.log("test vanaf jordi macbook haha");
