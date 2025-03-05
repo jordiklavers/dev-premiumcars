@@ -7,10 +7,10 @@ console.log("test vanaf jordi macbook haha");
 
 gsap.registerPlugin(CustomEase, ScrollTrigger);
 
-CustomEase.create("custom", "M0,0 C0.504,0 0.01,1 1,1");
+CustomEase.create( "main", "0.65, 0.01, 0.05, 0.99" );
 
 gsap.defaults({
-  ease: "custom",
+  ease: "main",
 });
 
 initFunctions();
@@ -19,6 +19,7 @@ function initFunctions() {
   document.addEventListener("DOMContentLoaded", () => {
     initLenis();
     initDetectScrollingDirection();
+    initMenu();
     initNavDropdown();
     initDynamicCurrentTime();
     initSwipers();
@@ -56,6 +57,61 @@ function initDetectScrollingDirection() {
       );
 
       lastScrollTop = nowScrollTop;
+    }
+  });
+}
+  
+function initMenu(){
+  let navWrap = document.querySelector(".nav_menu")
+  let navButton = document.querySelector(".menu-btn")
+  let menuDivider = document.querySelector(".menu-divider")
+  let state = navWrap.getAttribute("data-nav")
+  let overlay = navWrap.querySelector(".overlay")
+  let menu = navWrap.querySelector(".menu")
+  let bgPanels = navWrap.querySelectorAll(".menu-bg")
+  let menuToggles = document.querySelectorAll("[data-menu-toggle]")
+  let menuLinks = navWrap.querySelectorAll(".menu-link")
+
+  let tl = gsap.timeline()
+  
+  const openNav = () =>{
+    navWrap.setAttribute("data-nav", "open")
+    
+    tl.clear()
+    .set(navWrap,{display:"block"})
+    .set(menu,{xPercent:0},"<")
+    .fromTo(overlay,{autoAlpha:0},{autoAlpha:1},"<")
+    .fromTo(bgPanels,{xPercent:-101},{xPercent:0,duration: 0.575},"<")
+    .fromTo(navButton,{rotate:-180, scale:0},{rotate:0, scale:1},"<")
+    .fromTo(menuLinks,{yPercent:140,rotate:10},{yPercent:0, rotate:0,stagger:0.05},"<+=0.15")
+    .fromTo(menuDivider,{scaleX:0, transformOrigin:"left"},{scaleX:1},"<+0.35")
+  }
+  
+  const closeNav = () =>{
+    navWrap.setAttribute("data-nav", "closed")
+    
+    tl.clear()
+    .to(overlay,{autoAlpha:0})
+    .to(menu,{xPercent:-101},"<")
+    .set(navWrap,{display:"none"})
+  }  
+  
+  // Toggle menu open / close depending on its current state
+  menuToggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      state = navWrap.getAttribute("data-nav");
+      if (state === "open") {
+        closeNav();
+      } else {
+        openNav();
+      }
+    });    
+  });
+  
+  // If menu is open, you can close it using the "escape" key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && navWrap.getAttribute("data-nav") === "open") {
+      closeNav();
     }
   });
 }
@@ -158,12 +214,12 @@ function initDynamicCurrentTime() {
 
 function initSwipers() {
   const swiper = new Swiper(".swiper", {
-    loop: true,
-    speed: 875,
+    speed: 500, // Match our CSS
     slidesPerView: 3,
     spaceBetween: 24,
     createElements: true,
-
+    loop: true,
+    
     // Pagination
     pagination: {
       el: "[data-swiper-pagination]",

@@ -35,7 +35,23 @@
 
 /* ------------------------------ NAV ------------------------------ */
 .nav {
-  --nav-transition-duration: 0.8s;
+  --nav-transition-duration: 0.5s;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  transition: transform var(--nav-transition-duration) var(--cubic-default);
+}
+
+/* Nav visible (default) */
+.nav[data-nav="visible"] {
+  transform: translateY(0);
+}
+
+/* Nav hidden (when scrolling down) */
+.nav[data-nav="hidden"] {
+  transform: translateY(-100%);
 }
 
 .nav-primary_container {
@@ -102,7 +118,6 @@
 
 .swiper-wrapper {
   transition-timing-function: var(--cubic-default) !important;
-  transition-duration: 500ms !important;
 }
 
 [data-swiper-total] {
