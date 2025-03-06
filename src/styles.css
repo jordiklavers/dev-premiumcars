@@ -55,16 +55,18 @@
 }
 
 .nav-primary_container {
-  transition: padding var(--nav-transition-duration) var(--cubic-default), 
-              color var(--nav-transition-duration) var(--cubic-default);
+  transition: padding var(--nav-transition-duration) var(--cubic-default),
+    color var(--nav-transition-duration) var(--cubic-default);
 }
 
 .nav-secondary_container {
-  transition: color var(--nav-transition-duration) var(--cubic-default), border-top-color var(--nav-transition-duration) var(--cubic-default);
+  transition: color var(--nav-transition-duration) var(--cubic-default),
+    border-top-color var(--nav-transition-duration) var(--cubic-default);
 }
 
 .nav .btn_background {
-  transition: background-color var(--nav-transition-duration) var(--cubic-default);
+  transition: background-color var(--nav-transition-duration)
+    var(--cubic-default);
 }
 
 .nav .btn {
@@ -90,16 +92,17 @@
   border-top-color: rgba(48, 16, 107, 0.2);
 }
 
-[data-scrolling-started="true"] .nav-primary, [data-scrolling-started="true"] .nav-secondary {
+[data-scrolling-started="true"] .nav-primary,
+[data-scrolling-started="true"] .nav-secondary {
   color: var(--_swatch---techno-violet--100);
 }
 
 [data-scrolling-started="true"] .nav .btn_background {
-    background-color: var(--_swatch---techno-violet--100);
+  background-color: var(--_swatch---techno-violet--100);
 }
 
 [data-scrolling-started="true"] .nav .btn {
-    color: var(--_swatch---mineral-white--100);
+  color: var(--_swatch---mineral-white--100);
 }
 
 .nav_dropdown-menu {
@@ -108,6 +111,41 @@
   overflow: hidden;
   transform: translateY(10%);
   opacity: 0;
+}
+.nav_menu-btn {
+  transition: gap 0.3§s var(--cubic-default);
+}
+
+.nav_menu-btn:hover {
+  gap: 0.3em;
+}
+
+/* ------------------------------ BUTTONS ------------------------------ */
+
+.btn_icon-1,
+.btn_icon-2,
+.btn_icon-bg {
+  transition: transform 0.6s var(--cubic-default);
+}
+
+.btn.is-link {
+  transition: gap 0.4s var(--cubic-default);
+}
+
+.btn.is-link:hover .btn_icon-1 {
+  transform: translateX(3em);
+}
+
+.btn.is-link:hover .btn_icon-2 {
+  transform: translateX(0em);
+}
+
+.btn.is-link:hover .btn_icon-bg {
+  transform: scale(0.85);
+}
+
+.btn.is-link:hover {
+  gap: 0.5em;
 }
 
 /* ------------------------------ SWIPER ------------------------------ */

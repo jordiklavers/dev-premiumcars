@@ -7,7 +7,7 @@ console.log("test vanaf jordi macbook haha");
 
 gsap.registerPlugin(CustomEase, ScrollTrigger);
 
-CustomEase.create( "main", "0.65, 0.01, 0.05, 0.99" );
+CustomEase.create("main", "0.65, 0.01, 0.05, 0.99");
 
 gsap.defaults({
   ease: "main",
@@ -37,65 +37,89 @@ function initLenis() {
 
 function initDetectScrollingDirection() {
   let lastScrollTop = 0;
-  const threshold = 10; // Minimal scroll distance to switch to up/down 
+  const threshold = 10; // Minimal scroll distance to switch to up/down
   const thresholdTop = 50; // Minimal scroll distance from top of window to start
 
-  window.addEventListener('scroll', () => {
+  window.addEventListener("scroll", () => {
     const nowScrollTop = window.scrollY;
 
     if (Math.abs(lastScrollTop - nowScrollTop) >= threshold) {
       // Update Scroll Direction
-      const direction = nowScrollTop > lastScrollTop ? 'down' : 'up';
-      document.querySelectorAll('[data-scrolling-direction]').forEach(el => 
-        el.setAttribute('data-scrolling-direction', direction)
-      );
+      const direction = nowScrollTop > lastScrollTop ? "down" : "up";
+      document
+        .querySelectorAll("[data-scrolling-direction]")
+        .forEach((el) =>
+          el.setAttribute("data-scrolling-direction", direction)
+        );
 
       // Update Scroll Started
       const started = nowScrollTop > thresholdTop;
-      document.querySelectorAll('[data-scrolling-started]').forEach(el => 
-        el.setAttribute('data-scrolling-started', started ? 'true' : 'false')
-      );
+      document
+        .querySelectorAll("[data-scrolling-started]")
+        .forEach((el) =>
+          el.setAttribute("data-scrolling-started", started ? "true" : "false")
+        );
 
       lastScrollTop = nowScrollTop;
     }
   });
 }
-  
-function initMenu(){
-  let navWrap = document.querySelector(".nav_menu")
-  let navButton = document.querySelector(".menu-btn")
-  let menuDivider = document.querySelector(".menu-divider")
-  let state = navWrap.getAttribute("data-nav")
-  let overlay = navWrap.querySelector(".overlay")
-  let menu = navWrap.querySelector(".menu")
-  let bgPanels = navWrap.querySelectorAll(".menu-bg")
-  let menuToggles = document.querySelectorAll("[data-menu-toggle]")
-  let menuLinks = navWrap.querySelectorAll(".menu-link")
 
-  let tl = gsap.timeline()
-  
-  const openNav = () =>{
-    navWrap.setAttribute("data-nav", "open")
-    
+function initMenu() {
+  let navWrap = document.querySelector(".nav_menu");
+  let navButton = document.querySelector(".menu-btn");
+  let menuDivider = document.querySelector(".menu-divider");
+  let state = navWrap.getAttribute("data-nav");
+  let overlay = navWrap.querySelector(".overlay");
+  let menu = navWrap.querySelector(".menu");
+  let bgPanels = navWrap.querySelectorAll(".menu-bg");
+  let menuToggles = document.querySelectorAll("[data-menu-toggle]");
+  let menuLinks = navWrap.querySelectorAll(".menu-link");
+
+  let tl = gsap.timeline();
+
+  const openNav = () => {
+    navWrap.setAttribute("data-nav", "open");
+
     tl.clear()
-    .set(navWrap,{display:"block"})
-    .set(menu,{xPercent:0},"<")
-    .fromTo(overlay,{autoAlpha:0},{autoAlpha:1},"<")
-    .fromTo(bgPanels,{xPercent:-101},{xPercent:0,duration: 0.575},"<")
-    .fromTo(navButton,{rotate:-180, scale:0},{rotate:0, scale:1},"<")
-    .fromTo(menuLinks,{yPercent:140,rotate:10},{yPercent:0, rotate:0,stagger:0.05},"<+=0.15")
-    .fromTo(menuDivider,{scaleX:0, transformOrigin:"left"},{scaleX:1},"<+0.35")
-  }
-  
-  const closeNav = () =>{
-    navWrap.setAttribute("data-nav", "closed")
-    
+      .set(navWrap, { display: "block" })
+      .set(menu, { xPercent: 0 }, "<")
+      .fromTo(overlay, { autoAlpha: 0 }, { autoAlpha: 1 }, "<")
+      .fromTo(
+        bgPanels,
+        { xPercent: -101 },
+        { xPercent: 0, duration: 0.575 },
+        "<"
+      )
+      .fromTo(
+        navButton,
+        { rotate: -180, scale: 0 },
+        { rotate: 0, scale: 1 },
+        "<"
+      )
+      .fromTo(
+        menuLinks,
+        { yPercent: 140, rotate: 10 },
+        { yPercent: 0, rotate: 0, stagger: 0.05 },
+        "<+=0.15"
+      )
+      .fromTo(
+        menuDivider,
+        { scaleX: 0, transformOrigin: "left" },
+        { scaleX: 1 },
+        "<+0.35"
+      );
+  };
+
+  const closeNav = () => {
+    navWrap.setAttribute("data-nav", "closed");
+
     tl.clear()
-    .to(overlay,{autoAlpha:0})
-    .to(menu,{xPercent:-101},"<")
-    .set(navWrap,{display:"none"})
-  }  
-  
+      .to(overlay, { autoAlpha: 0 })
+      .to(menu, { xPercent: -101 }, "<")
+      .set(navWrap, { display: "none" });
+  };
+
   // Toggle menu open / close depending on its current state
   menuToggles.forEach((toggle) => {
     toggle.addEventListener("click", () => {
@@ -105,9 +129,9 @@ function initMenu(){
       } else {
         openNav();
       }
-    });    
+    });
   });
-  
+
   // If menu is open, you can close it using the "escape" key
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && navWrap.getAttribute("data-nav") === "open") {
@@ -219,7 +243,7 @@ function initSwipers() {
     spaceBetween: 24,
     createElements: true,
     loop: true,
-    
+
     // Pagination
     pagination: {
       el: "[data-swiper-pagination]",
@@ -272,4 +296,3 @@ function initSwipers() {
     console.log(`Slide ${formattedCurrentSlide} of ${formattedTotalSlides}`);
   }
 }
-
