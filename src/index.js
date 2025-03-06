@@ -75,6 +75,7 @@ function initMenu() {
   let bgPanels = navWrap.querySelectorAll(".menu-bg");
   let menuToggles = document.querySelectorAll("[data-menu-toggle]");
   let menuLinks = navWrap.querySelectorAll(".menu-link");
+  let menuHeaders = navWrap.querySelectorAll(".menu-header");
 
   let tl = gsap.timeline();
 
@@ -84,6 +85,9 @@ function initMenu() {
     tl.clear()
       .set(navWrap, { display: "block" })
       .set(menu, { xPercent: 0 }, "<")
+      .call(() => {
+        lenis.stop();
+      })
       .fromTo(overlay, { autoAlpha: 0 }, { autoAlpha: 1 }, "<")
       .fromTo(
         bgPanels,
@@ -108,6 +112,12 @@ function initMenu() {
         { scaleX: 0, transformOrigin: "left" },
         { scaleX: 1 },
         "<+0.35"
+      )
+      .fromTo(
+        menuHeaders,
+        { yPercent: 100 },
+        { yPercent: 0, stagger: 0.1 },
+        "<+=0.15"
       );
   };
 

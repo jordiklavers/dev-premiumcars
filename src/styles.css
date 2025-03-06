@@ -112,12 +112,38 @@
   transform: translateY(10%);
   opacity: 0;
 }
+
 .nav_menu-btn {
-  transition: gap 0.3§s var(--cubic-default);
+  transition: gap 0.3s var(--cubic-default);
 }
 
 .nav_menu-btn:hover {
   gap: 0.3em;
+}
+
+/* Nav Menu Hover */
+.menu-link p {
+  transition: transform 0.4s var(--cubic-default);
+}
+
+.menu-link p::before {
+  content: "";
+  width: 0.25em;
+  height: 0.25em;
+  background-color: var(--_swatch---dakar-yellow--50);
+  position: absolute;
+  transform: translateX(-2em);
+  top: 45%;
+  left: 0;
+  transition: transform 0.6s var(--cubic-default);
+}
+
+.menu-link:hover p {
+  transform: translateX(1em);
+}
+
+.menu-link:hover p::before {
+  transform: translateX(-1em);
 }
 
 /* ------------------------------ BUTTONS ------------------------------ */
