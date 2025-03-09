@@ -73,6 +73,7 @@ function initMenu() {
   let overlay = navWrap.querySelector(".overlay");
   let menu = navWrap.querySelector(".menu");
   let bgPanels = navWrap.querySelectorAll(".menu-bg");
+  let bgLine = navWrap.querySelector(".menu-bg_line");
   let menuToggles = document.querySelectorAll("[data-menu-toggle]");
   let menuLinks = navWrap.querySelectorAll(".menu-link");
   let menuHeaders = navWrap.querySelectorAll(".menu-header");
@@ -85,9 +86,6 @@ function initMenu() {
     tl.clear()
       .set(navWrap, { display: "block" })
       .set(menu, { xPercent: 0 }, "<")
-      .call(() => {
-        lenis.stop();
-      })
       .fromTo(overlay, { autoAlpha: 0 }, { autoAlpha: 1 }, "<")
       .fromTo(
         bgPanels,
@@ -102,8 +100,18 @@ function initMenu() {
         "<"
       )
       .fromTo(
+        bgLine,
+        {
+          transform: "translateX(-100%)",
+        },
+        {
+          transform: "translateX(0%)",
+        },
+        "<+=50%"
+      )
+      .fromTo(
         menuLinks,
-        { yPercent: 140, rotate: 10 },
+        { yPercent: 150, rotate: 10 },
         { yPercent: 0, rotate: 0, stagger: 0.05 },
         "<+=0.15"
       )
@@ -116,7 +124,7 @@ function initMenu() {
       .fromTo(
         menuHeaders,
         { yPercent: 100 },
-        { yPercent: 0, stagger: 0.1 },
+        { yPercent: 0, stagger: 0.2 },
         "<+=0.15"
       );
   };
