@@ -327,6 +327,14 @@
 
 /* ------------------------------ VOORRAAD VIEW SWITCH ------------------------------ */
 
+.voorraad_list-switch-item:first-child {
+  z-index: 2;
+}
+
+.voorraad_list-switch-item {
+  transition: opacity 0.2s linear;
+}
+
 .voorraad_item.is-list .voorraad_link {
   display: flex;
 }
