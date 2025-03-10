@@ -1,11 +1,12 @@
 import gsap from "https://cdn.skypack.dev/gsap";
 import CustomEase from "https://cdn.skypack.dev/gsap/CustomEase";
 import ScrollTrigger from "https://cdn.skypack.dev/gsap/ScrollTrigger";
+import Flip from "https://cdn.skypack.dev/gsap/Flip";
 import studioFreightlenis from "https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/+esm";
 
 console.log("test vanaf jordi macbook haha");
 
-gsap.registerPlugin(CustomEase, ScrollTrigger);
+gsap.registerPlugin(CustomEase, ScrollTrigger, Flip);
 
 CustomEase.create("main", "0.65, 0.01, 0.05, 0.99");
 
@@ -23,6 +24,7 @@ function initFunctions() {
     initNavDropdown();
     initDynamicCurrentTime();
     initSwipers();
+    initVoorraad();
   });
 }
 
@@ -313,4 +315,74 @@ function initSwipers() {
     // Log for debugging
     console.log(`Slide ${formattedCurrentSlide} of ${formattedTotalSlides}`);
   }
+}
+
+function initVoorraad() {
+  initVoorraadViewSwitch();
+
+  function initVoorraadViewSwitch() {
+    let viewSwitchWrapper = $(".voorraad_list-switch")
+    let viewSwitchButtons = viewSwitchWrapper.find(".voorraad_list-switch-item")
+
+    viewSwitchButtons.on("click", () => {
+      handleViewChange();
+    })
+
+    function handleViewChange() {
+      // Get the current view type from the wrapper
+      const viewSwitchWrapper = $(".voorraad_list-switch");
+      const currentView = viewSwitchWrapper.attr("data-view") || "grid";
+      const newView = currentView === "list" ? "grid" : "list";
+      
+      // Get all items that need to be animated
+      const items = $(".voorraad_item");
+      
+      // Get the active background element
+      const activeBg = $(".voorraad-switch_active-bg");
+      
+      // Get the current active button and the new target button
+      const currentActiveButton = $(`.voorraad_list-switch-item[data-view-item="${currentView}"]`);
+      const newActiveButton = $(`.voorraad_list-switch-item[data-view-item="${newView}"]`);
+      
+      // Record the state of the active background before moving it
+      const stateBg = Flip.getState(activeBg);
+      
+      // Update the view attribute on the wrapper immediately
+      viewSwitchWrapper.attr("data-view", newView);
+      
+      // Update the active state on the buttons immediately
+      $(".voorraad_list-switch-item").removeClass("is-active");
+      newActiveButton.addClass("is-active");
+      
+      // Move the active background to the new button
+      newActiveButton.append(activeBg);
+      
+      // Animate the active background to its new position immediately
+      Flip.from(stateBg, {
+        duration: 0.5,
+        ease: "main"
+      });
+      
+      // Scale down animation for items (happens simultaneously with the background animation)
+      gsap.to(items, {
+        scale: 0.8,
+        opacity: 0.5,
+        duration: 0.2,
+        ease: "power2.inOut",
+        onComplete: () => {
+          // Remove both classes from all items and add the new one
+          items.removeClass("is-list is-grid").addClass(`is-${newView}`);
+          
+          // Scale back up to normal
+          gsap.to(items, {
+            scale: 1,
+            opacity: 1,
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        }
+      });
+    }
+  }
+
 }

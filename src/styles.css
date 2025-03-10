@@ -209,8 +209,6 @@
   transform: scale(0.85);
 }
 
-
-
 /* ------------------------------ VOORRAAD ------------------------------ */
 
 /* Default Styles */
@@ -224,7 +222,7 @@
 .voorraad_item .voorraad_img-cta {
   opacity: 0;
   transition: opacity 0.1s var(--cubic-default);
-} 
+}
 
 .voorraad_item .voorraad_img-overlay {
   opacity: 0;
@@ -243,8 +241,6 @@
 .voorraad_item:hover .voorraad_img-cta .btn {
   transform: translateY(0em);
 }
-
-
 
 /* ------------------------------ SWIPER ------------------------------ */
 
@@ -300,7 +296,6 @@
   transform: translateX(0%);
 }
 
-
 /* ------------------------------ FOOTER ------------------------------ */
 
 .footer_link {
@@ -330,3 +325,23 @@
   opacity: 0.4;
 }
 
+/* ------------------------------ VOORRAAD VIEW SWITCH ------------------------------ */
+
+.voorraad_item.is-list .voorraad_link {
+  display: flex;
+}
+
+.voorraad_item.is-list .voorraad_img-wrap {
+  width: 50%;
+  margin-bottom: 0em !important;
+
+}
+
+.voorraad_item.is-list .voorraad_content {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 4em;
+  background-color: var(--_theme---background-secondary)
+}
