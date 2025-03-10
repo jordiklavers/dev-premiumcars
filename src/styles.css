@@ -101,7 +101,7 @@
   background-color: var(--_swatch---techno-violet--100);
 }
 
-[data-scrolling-started="true"] .nav .btn {
+[data-scrolling-started="true"] .nav-primary .btn {
   color: var(--_swatch---mineral-white--100);
 }
 
@@ -146,16 +146,55 @@
   transform: translateX(-1em);
 }
 
+/* Navigation Links Hover */
+
+.nav_link::before {
+  content: "";
+  width: 100%;
+  height: 1px;
+  background-color: var(--_swatch---dakar-yellow--50);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--cubic-default);
+}
+
+.nav_link:hover::before {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
 /* ------------------------------ BUTTONS ------------------------------ */
+
+.btn .btn_text {
+  text-shadow: 0px 2em currentColor;
+  transition: transform 0.3s var(--cubic-default);
+}
+
+.btn:hover .btn_text {
+  transform: translateY(-2em);
+}
 
 .btn_icon-1,
 .btn_icon-2,
 .btn_icon-bg {
-  transition: transform 0.6s var(--cubic-default);
+  transition: transform 0.5s var(--cubic-default);
 }
 
 .btn.is-link {
-  transition: gap 0.4s var(--cubic-default);
+  border-radius: 0em;
+}
+
+.btn.is-link .btn_container span {
+  text-shadow: 0px 1.6em currentColor;
+  transition: transform 0.3s var(--cubic-default);
+  display: inline-block;
+}
+
+.btn.is-link:hover .btn_container span {
+  transform: translateY(-1.6em);
 }
 
 .btn.is-link:hover .btn_icon-1 {
@@ -170,9 +209,7 @@
   transform: scale(0.85);
 }
 
-.btn.is-link:hover {
-  gap: 0.5em;
-}
+
 
 /* ------------------------------ VOORRAAD ------------------------------ */
 
@@ -281,7 +318,7 @@
   left: 0%;
   transform: scaleX(0);
   transform-origin: right;
-  transition: transform 0.5s var(--cubic-default);
+  transition: transform 0.7s var(--cubic-default);
 }
 
 .footer_link:hover::after {

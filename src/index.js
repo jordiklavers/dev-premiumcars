@@ -215,7 +215,7 @@ function initNavDropdown() {
     tl.to(dropdownMenu, {
       display: "none",
       visibility: "hidden",
-    });
+    },"<+50%");
   });
 }
 
