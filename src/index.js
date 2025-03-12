@@ -8,7 +8,7 @@ import lagrangeBarbaCore from "https://cdn.skypack.dev/@lagrange/barba-core";
 gsap.registerPlugin(CustomEase, ScrollTrigger, Flip);
 
 let lenis;
-let transitionOffset = 10; /* ms */
+let transitionOffset = 800; /* ms */
 
 CustomEase.create("main", "0.65, 0.01, 0.05, 0.99");
 gsap.defaults({ ease: "main" });
@@ -77,10 +77,8 @@ function initPageTransitions() {
     // Ensure menu is initialized after each page transition
     initMenu();
     
-    // Initialize Finsweet attributes if they exist
-    if (window.fsAttributes && typeof window.fsAttributes.init === 'function') {
-      window.fsAttributes.init();
-    }
+    // Initialize Finsweet attributes - primary initialization point
+    initFinsweet();
  });
  
  lagrangeBarbaCore.hooks.leave(() => {
@@ -125,10 +123,6 @@ function initPageTransitions() {
     window.scrollTo(0, 0);
     ScrollTrigger.refresh();
     
-    // Initialize Finsweet attributes if they exist
-    if (window.fsAttributes && typeof window.fsAttributes.init === 'function') {
-      window.fsAttributes.init();
-    }
   }
 
   lagrangeBarbaCore.init({
@@ -146,6 +140,8 @@ function initPageTransitions() {
       once(data) {
         initSmoothScroll(data.next.container);
         initFunctions();
+        // Initialize Finsweet attributes on first load only
+        initFinsweet();
       },
       async leave(data) {
         await commonLeaveBeforeOffset(data);
@@ -208,11 +204,7 @@ function initResetWebflow(data) {
   window.Webflow.ready();
   // window.Webflow.require("ix2").init();
   
-  // Initialize Finsweet attributes if they exist
-  if (window.fsAttributes && typeof window.fsAttributes.init === 'function') {
-    console.log("Initializing Finsweet attributes after Webflow reset");
-    window.fsAttributes.init();
-  }
+ 
 }
 
 function initSmoothScroll(container) {
@@ -700,4 +692,16 @@ function initVoorraadFilter() {
       }
     });
   }
+}
+
+function initFinsweet() {
+  // Initialize specific Finsweet attributes if they exist
+  const fsAttributesToInit = ['cmsfilter', 'cmsselect', 'rangeslider'];
+  
+  fsAttributesToInit.forEach(attr => {
+    if (window.fsAttributes && window.fsAttributes[attr] && typeof window.fsAttributes[attr].init === 'function') {
+      console.log(`Initializing ${attr}`);
+      window.fsAttributes[attr].init();
+    }
+  });
 }
