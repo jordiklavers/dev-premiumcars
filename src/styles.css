@@ -97,7 +97,7 @@
   color: var(--_swatch---techno-violet--100);
 }
 
-[data-scrolling-started="true"] .nav .btn_background {
+[data-scrolling-started="true"] .nav-primary .btn_background {
   background-color: var(--_swatch---techno-violet--100);
 }
 
@@ -110,7 +110,10 @@
   visibility: hidden;
   overflow: hidden;
   transform: translateY(10%);
-  opacity: 0;
+}
+
+.nav_dropdown-menu .btn.is-link {
+  color: var(--_swatch---techno-violet--100);
 }
 
 .nav_menu-btn {
@@ -331,6 +334,14 @@
   z-index: 2;
 }
 
+.voorraad_list-content {
+  transition: gap 0.3s var(--cubic-default);
+}
+
+.voorraad_list-switch-item:hover .voorraad_list-content{
+  gap: 0.75em;
+}
+
 .voorraad_list-switch-item {
   transition: opacity 0.2s linear;
 }
@@ -352,4 +363,27 @@
   justify-content: center;
   padding-left: 4em;
   background-color: var(--_theme---background-secondary)
+}
+
+/* ------------------------------ VOORRAAD FILTER ------------------------------ */
+
+.w-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.filter-menu_form-select {
+  background-image: url(https://cdn.prod.website-files.com/67c5e713cd351503e66209c2/67d094e2cc0d55d07f7ca2b3_chevron-down-small.svg);
+  background-repeat: no-repeat;
+  background-position: right 1em center;
+  background-size: 1.5em;
+}
+
+.voorraad_filter-btn .icon-s {
+  transition: transform 0.5s var(--cubic-default);
+  transform: scale(1) rotate(0deg)
+}
+
+.voorraad_filter-btn:hover .icon-s {
+  transform: scale(1.3) rotate(90deg)
 }

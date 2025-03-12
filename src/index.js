@@ -25,6 +25,7 @@ function initFunctions() {
     initDynamicCurrentTime();
     initSwipers();
     initVoorraad();
+    initVoorraadFilter();
   });
 }
 
@@ -181,8 +182,8 @@ function initNavDropdown() {
         display: "block",
         visibility: "visible",
         transform: "translateY(0)",
-        opacity: 1,
         duration: 0.6,
+        opacity: 1,
       }
     );
 
@@ -342,6 +343,7 @@ function initVoorraadViewSwitch() {
 
   viewSwitchButtons.on("click", () => {
     handleViewChange();
+    console.log("clicked")
   })
 
   function handleViewChange() {
@@ -399,4 +401,82 @@ function initVoorraadViewSwitch() {
       }
     });
   }
+}
+
+function initVoorraadFilter() {
+  initVoorraadFilterModal();
+
+  function initVoorraadFilterModal() {
+    //
+    let navWrap = document.querySelector(".voorraad_filter-menu");
+    // let navButton = document.querySelector(".menu-btn");
+    let state = navWrap.getAttribute("data-filters");
+    let overlay = navWrap.querySelector(".overlay");
+    let menu = navWrap.querySelector(".filter-menu");
+    let bgPanels = navWrap.querySelectorAll(".filter-menu_bg");
+    let menuToggles = document.querySelectorAll("[data-filter-menu-toggle]");
+    let menuHeader = navWrap.querySelector(".filter-menu_header")
+    let menuFilters = navWrap.querySelector(".filter-menu_filters")
+    let menuButton = navWrap.querySelector(".menu-btn")
+  
+    let tl = gsap.timeline({ defaults: { duration: 0.5, ease: "main" } });
+  
+    const openNav = () => {
+      navWrap.setAttribute("data-filters", "open");
+  
+      tl.clear()
+        .set(navWrap, { display: "flex" })
+        .set(menu, { xPercent: 0 }, "<")
+        .fromTo(overlay, { autoAlpha: 0 }, { autoAlpha: 1 }, "<")
+        .fromTo(
+          bgPanels,
+          { xPercent: 101 },
+          { xPercent: 0, duration: 0.575 },
+          "<"
+        )
+        .fromTo(
+          menuHeader,
+          { yPercent: 100, opacity: 0 },
+          { yPercent: 0, opacity: 1,stagger: 0.2 },
+          "<+=0.15"
+        )
+        .fromTo(menuButton, { rotate: -180, scale: 0 }, { rotate: 0, scale: 1 }, "<")
+        .fromTo(
+          menuFilters,
+          { yPercent: 100, opacity: 0 },
+          { yPercent: 0, opacity: 1,stagger: 0.2 },
+          "<+=0.15"
+        )
+    };
+  
+    const closeNav = () => {
+      navWrap.setAttribute("data-filters", "closed");
+  
+      tl.clear()
+        .to(overlay, { autoAlpha: 0 })
+        .to(menu, { xPercent: 101 }, "<")
+        .set(navWrap, { display: "none" });
+    };
+  
+    // Toggle menu open / close depending on its current state
+    menuToggles.forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        state = navWrap.getAttribute("data-filters");
+        if (state === "open") {
+          closeNav();
+        } else {
+          openNav();
+        }
+      });
+    });
+  
+    // If menu is open, you can close it using the "escape" key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && navWrap.getAttribute("data-filters") === "open") {
+        closeNav();
+      }
+    });
+  }
+
+  
 }
