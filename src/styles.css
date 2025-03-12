@@ -334,16 +334,9 @@
   z-index: 2;
 }
 
-.voorraad_list-content {
-  transition: gap 0.3s var(--cubic-default);
-}
-
-.voorraad_list-switch-item:hover .voorraad_list-content{
-  gap: 0.75em;
-}
-
 .voorraad_list-switch-item {
   transition: opacity 0.2s linear;
+  transition-delay: 0.25s;
 }
 
 .voorraad_item.is-list .voorraad_link {
