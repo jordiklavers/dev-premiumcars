@@ -5,6 +5,8 @@ import Flip from "https://cdn.skypack.dev/gsap/Flip";
 import studioFreightlenis from "https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/+esm";
 import lagrangeBarbaCore from "https://cdn.skypack.dev/@lagrange/barba-core";
 
+console.log("dit is een test voor js")
+
 gsap.registerPlugin(CustomEase, ScrollTrigger, Flip);
 
 let lenis;
