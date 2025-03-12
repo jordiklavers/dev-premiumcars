@@ -8,7 +8,7 @@ import lagrangeBarbaCore from "https://cdn.skypack.dev/@lagrange/barba-core";
 gsap.registerPlugin(CustomEase, ScrollTrigger, Flip);
 
 let lenis;
-let transitionOffset = 800; /* ms */
+let transitionOffset = 10; /* ms */
 
 CustomEase.create("main", "0.65, 0.01, 0.05, 0.99");
 gsap.defaults({ ease: "main" });
@@ -34,8 +34,8 @@ function pageTransitionIn() {
       autoAlpha: 0,
       y: "-100%",
       ease: "main",
-      duration: 0.5,
-      stagger: 0.1
+      duration: 0.8,
+      stagger: 0.075
     }, "<");
   }
 }
@@ -51,7 +51,7 @@ function pageTransitionOut() {
       ease: "main",
       duration: 0.8,
       stagger: 0.1
-    });
+    },"-0.1");
   }
 
   if ($("[data-animation-transition='fade']").length) {
@@ -101,7 +101,7 @@ function initPageTransitions() {
   async function commonLeaveAfterOffset(data) {
     //
     console.log("commonLeaveAfterOffset");
-    await delay(200);
+    await delay(10);
     $('[data-scrolling-direction]').attr('data-scrolling-direction', 'up');
     $('[data-scrolling-started]').attr('data-scrolling-started', 'false');
   }
@@ -166,7 +166,6 @@ function initPageTransitions() {
 
 }
 
-// Add a cleanup function to remove event listeners
 function cleanupEventListeners() {
   // Remove menu event listeners to prevent duplicates
   $("[data-menu-toggle]").off("click");
@@ -191,7 +190,6 @@ function initFunctions() {
   });
 }
 
-// Helper function for delays
 function delay(n) {
   n = n || 2000;
   return new Promise((done) => {
@@ -474,8 +472,14 @@ function initSwipers() {
       prevEl: "[data-swiper-prev]",
     },
     breakpoints: {
-      768: {
+      320: {
         slidesPerView: 1,
+      },
+      640: {
+        slidesPerView: 2,
+      },
+      1024: {
+        slidesPerView: 3,
       },
     },
 
