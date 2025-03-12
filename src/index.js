@@ -275,6 +275,11 @@ function initSwipers() {
       nextEl: "[data-swiper-next]",
       prevEl: "[data-swiper-prev]",
     },
+    breakpoints: {
+      768: {
+        slidesPerView: 1,
+      },
+    },
 
     on: {
       init: function () {
