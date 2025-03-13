@@ -21,22 +21,32 @@ function pageTransitionIn() {
   //
   let tl = gsap.timeline();
 
-  if ($("[data-animation-transition='fade'], [data-animation-transition='slide']").length) {
-    tl.to("[data-animation-transition='fade'], [data-animation-transition='slide']", {
-      autoAlpha: 0,
-      ease: "none",
-      duration: 0.3
-    });
+  if (
+    $("[data-animation-transition='fade'], [data-animation-transition='slide']")
+      .length
+  ) {
+    tl.to(
+      "[data-animation-transition='fade'], [data-animation-transition='slide']",
+      {
+        autoAlpha: 0,
+        ease: "none",
+        duration: 0.3,
+      }
+    );
   }
 
   if ($("[data-animation-transition='fade-up']").length) {
-    tl.to("[data-animation-transition='fade-up']", {
-      autoAlpha: 0,
-      y: "-100%",
-      ease: "main",
-      duration: 0.8,
-      stagger: 0.075
-    }, "<");
+    tl.to(
+      "[data-animation-transition='fade-up']",
+      {
+        autoAlpha: 0,
+        y: "-100%",
+        ease: "main",
+        duration: 0.8,
+        stagger: 0.075,
+      },
+      "<"
+    );
   }
 }
 
@@ -45,30 +55,35 @@ function pageTransitionOut() {
 
   let tl = gsap.timeline();
   if ($("[data-animation-transition='fade-up']").length) {
-    tl.from("[data-animation-transition='fade-up']", {
-      autoAlpha: 0,
-      y: "100%",
-      ease: "main",
-      duration: 0.8,
-      stagger: 0.1
-    },"-0.1");
+    tl.from(
+      "[data-animation-transition='fade-up']",
+      {
+        autoAlpha: 0,
+        y: "100%",
+        ease: "main",
+        duration: 0.8,
+        stagger: 0.1,
+      },
+      "-0.1"
+    );
   }
 
   if ($("[data-animation-transition='fade']").length) {
-    tl.from("[data-animation-transition='fade']", {
-      autoAlpha: 0,
-      rotate: 0.001,
-      ease: "jitter-smooth",
-      duration: 0.5,
-      clearProps: "all"
-    },"<+50%");
+    tl.from(
+      "[data-animation-transition='fade']",
+      {
+        autoAlpha: 0,
+        rotate: 0.001,
+        ease: "jitter-smooth",
+        duration: 0.5,
+        clearProps: "all",
+      },
+      "<+50%"
+    );
   }
-
-
 }
 
 function initPageTransitions() {
-
   history.scrollRestoration = "manual";
 
   lagrangeBarbaCore.hooks.afterEnter(() => {
@@ -76,29 +91,29 @@ function initPageTransitions() {
     ScrollTrigger.refresh();
     // Ensure menu is initialized after each page transition
     initMenu();
- });
- 
- lagrangeBarbaCore.hooks.leave(() => {
+  });
+
+  lagrangeBarbaCore.hooks.leave(() => {
     // Clean up event listeners before leaving the page
     cleanupEventListeners();
     initFunctions();
- });
+  });
 
   //
   async function commonLeaveBeforeOffset(data) {
     //
     console.log("commonLeaveBeforeOffset");
     pageTransitionIn(data.current);
-    $('[data-scrolling-direction]').attr('data-scrolling-direction', 'up');
-    $('[data-scrolling-started]').attr('data-scrolling-started', 'false');
+    $("[data-scrolling-direction]").attr("data-scrolling-direction", "up");
+    $("[data-scrolling-started]").attr("data-scrolling-started", "false");
   }
 
   async function commonLeaveAfterOffset(data) {
     //
     console.log("commonLeaveAfterOffset");
     await delay(10);
-    $('[data-scrolling-direction]').attr('data-scrolling-direction', 'up');
-    $('[data-scrolling-started]').attr('data-scrolling-started', 'false');
+    $("[data-scrolling-direction]").attr("data-scrolling-direction", "up");
+    $("[data-scrolling-started]").attr("data-scrolling-started", "false");
   }
 
   async function commonEnter(data) {
@@ -132,37 +147,38 @@ function initPageTransitions() {
         return true;
       }
     },
-    transitions: [{
-      name: "default", 
-      once(data) {
-        initSmoothScroll(data.next.container);
-        initFunctions();
-        // Initialize Finsweet attributes on first load only
+    transitions: [
+      {
+        name: "default",
+        once(data) {
+          initSmoothScroll(data.next.container);
+          initFunctions();
+          // Initialize Finsweet attributes on first load only
+        },
+        async leave(data) {
+          await commonLeaveBeforeOffset(data);
+          await delay(transitionOffset);
+          await commonLeaveAfterOffset(data);
+        },
+        async enter(data) {
+          await commonEnter(data);
+        },
+        async beforeEnter(data) {
+          await commonBeforeEnter(data);
+        },
+        async afterEnter(data) {
+          await commonAfterEnter(data);
+        },
       },
-      async leave(data) {
-        await commonLeaveBeforeOffset(data);
-        await delay(transitionOffset);
-        await commonLeaveAfterOffset(data);
-      },
-      async enter(data) {
-        await commonEnter(data);
-      },
-      async beforeEnter(data) {
-        await commonBeforeEnter(data);
-      },
-      async afterEnter(data) {
-        await commonAfterEnter(data);
-      }
-    }]
-  })
-
+    ],
+  });
 }
 
 function cleanupEventListeners() {
   // Remove menu event listeners to prevent duplicates
   $("[data-menu-toggle]").off("click");
   $(document).off("keydown.menuEscape");
-  
+
   // Remove other event listeners as needed
   $(".nav_dropdown").off("mouseenter mouseleave");
   $(".voorraad_list-switch-item").off("click");
@@ -170,11 +186,10 @@ function cleanupEventListeners() {
 }
 
 function initFunctions() {
-  $(document).ready(function() {
+  $(document).ready(function () {
     initLenis();
     initDetectScrollingDirection();
     initMenu();
-    initNavDropdown();
     initDynamicCurrentTime();
     initSwipers();
     initVoorraad();
@@ -200,8 +215,6 @@ function initResetWebflow(data) {
   window.Webflow.destroy();
   window.Webflow.ready();
   // window.Webflow.require("ix2").init();
-  
- 
 }
 
 function initSmoothScroll(container) {
@@ -223,17 +236,23 @@ function initDetectScrollingDirection() {
   const threshold = 10; // Minimal scroll distance to switch to up/down
   const thresholdTop = 50; // Minimal scroll distance from top of window to start
 
-  $(window).on("scroll", function() {
+  $(window).on("scroll", function () {
     const nowScrollTop = $(window).scrollTop();
 
     if (Math.abs(lastScrollTop - nowScrollTop) >= threshold) {
       // Update Scroll Direction
       const direction = nowScrollTop > lastScrollTop ? "down" : "up";
-      $("[data-scrolling-direction]").attr("data-scrolling-direction", direction);
+      $("[data-scrolling-direction]").attr(
+        "data-scrolling-direction",
+        direction
+      );
 
       // Update Scroll Started
       const started = nowScrollTop > thresholdTop;
-      $("[data-scrolling-started]").attr("data-scrolling-started", started ? "true" : "false");
+      $("[data-scrolling-started]").attr(
+        "data-scrolling-started",
+        started ? "true" : "false"
+      );
 
       lastScrollTop = nowScrollTop;
     }
@@ -242,11 +261,11 @@ function initDetectScrollingDirection() {
 
 function initMenu() {
   console.log("menu init");
-  
+
   // First clean up any existing event listeners to prevent duplicates
   $("[data-menu-toggle]").off("click");
   $(document).off("keydown.menuEscape");
-  
+
   let $navWrap = $(".nav_menu");
   let $navButton = $(".menu-btn");
   let $menuDivider = $(".menu-divider");
@@ -320,8 +339,8 @@ function initMenu() {
   };
 
   // Toggle menu open / close depending on its current state
-  $menuToggles.each(function() {
-    $(this).on("click", function() {
+  $menuToggles.each(function () {
+    $(this).on("click", function () {
       state = $navWrap.attr("data-nav");
       if (state === "open") {
         closeNav();
@@ -333,80 +352,12 @@ function initMenu() {
 
   // If menu is open, you can close it using the "escape" key
   // Use namespaced event to easily unbind it later
-  $(document).on("keydown.menuEscape", function(e) {
+  $(document).on("keydown.menuEscape", function (e) {
     if (e.key === "Escape" && $navWrap.attr("data-nav") === "open") {
       closeNav();
     }
   });
-}
-
-function initNavDropdown() {
-  // Clean up existing event listeners
-  $(".nav_dropdown").off("mouseenter mouseleave");
-  
-  const $navDropdown = $(".nav_dropdown");
-  const $dropdownMenu = $(".nav_dropdown-menu");
-  const $dropdownBackground = $dropdownMenu.find(".nav_dropdown-bg");
-  const $dropdownContent = $dropdownMenu.find(".nav_dropdown-content-w");
-
-  $navDropdown.on("mouseenter", function() {
-    let tl = gsap.timeline();
-
-    tl.fromTo(
-      $dropdownMenu,
-      {
-        display: "none",
-        visibility: "hidden",
-        transform: "translateY(10%)",
-        opacity: 0,
-      },
-      {
-        display: "block",
-        visibility: "visible",
-        transform: "translateY(0)",
-        duration: 0.6,
-        opacity: 1,
-      }
-    );
-
-    tl.to(
-      [$dropdownBackground, $dropdownContent],
-      {
-        opacity: 1,
-        duration: 0.6,
-      },
-      "<"
-    );
-  });
-
-  $navDropdown.on("mouseleave", function() {
-    let tl = gsap.timeline();
-
-    tl.to([$dropdownBackground, $dropdownContent], {
-      opacity: 0,
-      duration: 0.4,
-    });
-
-    tl.to(
-      $dropdownMenu,
-      {
-        opacity: 0,
-        duration: 0.4,
-        transform: "translateY(10%)",
-      },
-      "<"
-    );
-
-    tl.to(
-      $dropdownMenu,
-      {
-        display: "none",
-        visibility: "hidden",
-      },
-      "<+50%"
-    );
-  });
-}
+} 
 
 function initDynamicCurrentTime() {
   const defaultTimezone = "Europe/Amsterdam";
@@ -425,15 +376,15 @@ function initDynamicCurrentTime() {
 
   // Function to update the time for all elements
   const updateTime = () => {
-    $("[data-current-time]").each(function() {
+    $("[data-current-time]").each(function () {
       const timezone = $(this).attr("data-current-time") || defaultTimezone;
       const formatter = createFormatter(timezone);
       const now = new Date();
       const formattedTime = formatter.format(now);
       // Capitalize first letter of the day
-      $(this).text(formattedTime.replace(/^[a-z]/, (letter) =>
-        letter.toUpperCase()
-      ));
+      $(this).text(
+        formattedTime.replace(/^[a-z]/, (letter) => letter.toUpperCase())
+      );
     });
   };
 
@@ -487,7 +438,8 @@ function initSwipers() {
     const currentSlide = swiper.realIndex + 1;
 
     // Get the actual number of slides (not duplicated ones)
-    const totalSlides = $(".swiper-slide.is-reviews:not(.swiper-slide-duplicate)").length || 5; // Fallback to 5 if can't determine
+    const totalSlides =
+      $(".swiper-slide.is-reviews:not(.swiper-slide-duplicate)").length || 5; // Fallback to 5 if can't determine
 
     // Format numbers with leading zeros
     const formatNumber = (num) => num.toString().padStart(2, "0");
@@ -519,7 +471,7 @@ function initSwipers() {
       disableOnInteraction: false,
     },
     loop: true,
-  })
+  });
 
   const autoImageSwiper = new Swiper(".swiper.is-voorraad-img", {
     slidesPerView: 1.5,
@@ -534,9 +486,7 @@ function initSwipers() {
       prevEl: "[data-swiper-prev]",
     },
   });
-
 }
-
 
 function initVoorraad() {
   // Count the number of voorraad items
@@ -560,11 +510,13 @@ function initVoorraad() {
 function initVoorraadViewSwitch() {
   // Clean up existing event listeners
   $(".voorraad_list-switch-item").off("click");
-  
-  let $viewSwitchWrapper = $(".voorraad_list-switch");
-  let $viewSwitchButtons = $viewSwitchWrapper.find(".voorraad_list-switch-item");
 
-  $viewSwitchButtons.on("click", function() {
+  let $viewSwitchWrapper = $(".voorraad_list-switch");
+  let $viewSwitchButtons = $viewSwitchWrapper.find(
+    ".voorraad_list-switch-item"
+  );
+
+  $viewSwitchButtons.on("click", function () {
     handleViewChange();
     console.log("clicked");
   });
@@ -637,7 +589,7 @@ function initVoorraadFilter() {
     // Clean up existing event listeners
     $("[data-filter-menu-toggle]").off("click");
     $(document).off("keydown.filterEscape");
-    
+
     let $navWrap = $(".voorraad_filter-menu");
     // let $navButton = $(".menu-btn");
     let state = $navWrap.attr("data-filters");
@@ -694,8 +646,8 @@ function initVoorraadFilter() {
     };
 
     // Toggle menu open / close depending on its current state
-    $menuToggles.each(function() {
-      $(this).on("click", function() {
+    $menuToggles.each(function () {
+      $(this).on("click", function () {
         state = $navWrap.attr("data-filters");
         if (state === "open") {
           closeNav();
@@ -707,11 +659,8 @@ function initVoorraadFilter() {
 
     // If menu is open, you can close it using the "escape" key
     // Use namespaced event to easily unbind it later
-    $(document).on("keydown.filterEscape", function(e) {
-      if (
-        e.key === "Escape" &&
-        $navWrap.attr("data-filters") === "open"
-      ) {
+    $(document).on("keydown.filterEscape", function (e) {
+      if (e.key === "Escape" && $navWrap.attr("data-filters") === "open") {
         closeNav();
       }
     });
@@ -720,10 +669,14 @@ function initVoorraadFilter() {
 
 function initFinsweet() {
   // Initialize specific Finsweet attributes if they exist
-  const fsAttributesToInit = ['cmsfilter', 'cmsselect', 'rangeslider'];
-  
-  fsAttributesToInit.forEach(attr => {
-    if (window.fsAttributes && window.fsAttributes[attr] && typeof window.fsAttributes[attr].init === 'function') {
+  const fsAttributesToInit = ["cmsfilter", "cmsselect", "rangeslider"];
+
+  fsAttributesToInit.forEach((attr) => {
+    if (
+      window.fsAttributes &&
+      window.fsAttributes[attr] &&
+      typeof window.fsAttributes[attr].init === "function"
+    ) {
       console.log(`Initializing ${attr}`);
       window.fsAttributes[attr].init();
     }
@@ -734,14 +687,15 @@ function initFinsweet() {
 
 function initTabsComponent() {
   const wrappers = document.querySelectorAll('[data-tabs="wrapper"]');
-  
+
   wrappers.forEach((wrapper) => {
     const contentItems = wrapper.querySelectorAll('[data-tabs="content-item"]');
     const visualItems = wrapper.querySelectorAll('[data-tabs="visual-item"]');
-    
+
     const autoplay = wrapper.dataset.tabsAutoplay === "true";
-    const autoplayDuration = parseInt(wrapper.dataset.tabsAutoplayDuration) || 5000;
-    
+    const autoplayDuration =
+      parseInt(wrapper.dataset.tabsAutoplayDuration) || 5000;
+
     let activeContent = null; // keep track of active item/link
     let activeVisual = null;
     let isAnimating = false;
@@ -749,9 +703,11 @@ function initTabsComponent() {
 
     function startProgressBar(index) {
       if (progressBarTween) progressBarTween.kill();
-      const bar = contentItems[index].querySelector('[data-tabs="item-progress"]');
+      const bar = contentItems[index].querySelector(
+        '[data-tabs="item-progress"]'
+      );
       if (!bar) return;
-      
+
       // In this function, you can basically do anything you want, that should happen as a tab is active
       // Maybe you have a circle filling, some other element growing, you name it.
       gsap.set(bar, { scaleX: 0, transformOrigin: "left center" });
@@ -770,23 +726,27 @@ function initTabsComponent() {
 
     function switchTab(index) {
       if (isAnimating || contentItems[index] === activeContent) return;
-      
+
       isAnimating = true;
       if (progressBarTween) progressBarTween.kill(); // Stop any running progress bar here
-      
+
       const outgoingContent = activeContent;
       const outgoingVisual = activeVisual;
-      const outgoingBar = outgoingContent?.querySelector('[data-tabs="item-progress"]');
-      
+      const outgoingBar = outgoingContent?.querySelector(
+        '[data-tabs="item-progress"]'
+      );
+
       const incomingContent = contentItems[index];
       const incomingVisual = visualItems[index];
-      const incomingBar = incomingContent.querySelector('[data-tabs="item-progress"]');
-      
+      const incomingBar = incomingContent.querySelector(
+        '[data-tabs="item-progress"]'
+      );
+
       outgoingContent?.classList.remove("active");
       outgoingVisual?.classList.remove("active");
       incomingContent.classList.add("active");
       incomingVisual.classList.add("active");
-      
+
       const tl = gsap.timeline({
         defaults: { duration: 0.65, ease: "power3" },
         onComplete: () => {
@@ -796,7 +756,7 @@ function initTabsComponent() {
           if (autoplay) startProgressBar(index); // Start autoplay bar here
         },
       });
-      
+
       // Wrap 'outgoing' in a check to prevent warnings on first run of the function
       // Of course, during first run (on page load), there's no 'outgoing' tab yet!
       if (outgoingContent) {
@@ -804,20 +764,24 @@ function initTabsComponent() {
         outgoingVisual?.classList.remove("active");
         tl.set(outgoingBar, { transformOrigin: "right center" })
           .to(outgoingBar, { scaleX: 0, duration: 0.3 }, 0)
-          .to(outgoingVisual, { autoAlpha: 0, xPercent: 3 }, 0)
+          .to(outgoingVisual, { autoAlpha: 0, xPercent: 3 }, 0);
       }
 
       incomingContent.classList.add("active");
       incomingVisual.classList.add("active");
-      tl.fromTo(incomingVisual, { autoAlpha: 0, xPercent: 3 }, { autoAlpha: 1, xPercent: 0 }, 0.3)
-        .set(incomingBar, { scaleX: 0, transformOrigin: "left center" }, 0);
+      tl.fromTo(
+        incomingVisual,
+        { autoAlpha: 0, xPercent: 3 },
+        { autoAlpha: 1, xPercent: 0 },
+        0.3
+      ).set(incomingBar, { scaleX: 0, transformOrigin: "left center" }, 0);
     }
 
     // on page load, set first to active
     // idea: you could wrap this in a scrollTrigger
     // so it will only start once a user reaches this section
     switchTab(0);
-    
+
     // switch tabs on click
     contentItems.forEach((item, i) =>
       item.addEventListener("click", () => {
@@ -825,6 +789,5 @@ function initTabsComponent() {
         switchTab(i);
       })
     );
-    
   });
 }
