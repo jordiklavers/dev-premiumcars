@@ -1,0 +1,51 @@
+:root {
+    --swiper-image-ratio: 33.3%; /* ratio 16:9 = 56.25% */
+  
+    --swiper-width: 50%;
+    --swiper-inactive-scale: .85; /* makes the other slide smaller */
+    
+    /* responsive settings */
+    --swiper-mobile-width: 90%;
+    --swiper-mobile-inactive-scale: .95;
+  }
+
+
+/* ------ OVERIG ------- */
+.swiper.is-voorraad-img {
+    --swiper-image-ratio: 33.3%; /* ratio 16:9 = 56.25% */
+  
+    --swiper-width: 50%;
+    --swiper-inactive-scale: .85; /* makes the other slide smaller */
+    
+    /* responsive settings */
+    --swiper-mobile-width: 90%;
+    --swiper-mobile-inactive-scale: .95;
+
+    position: relative;
+    width: 100%;
+    height: calc(var(--swiper-width) * var(--swiper-image-ratio) / 100%);
+    overflow: hidden;
+}
+
+.swiper.is-voorraad-img .swiper-slide {
+  position: relative;
+  width: var(--swiper-width);
+  opacity: .5;
+  transform: scale(.84);
+  transition: all .3s ease-in-out;
+  overflow: hidden;
+  border-radius: 0.4285rem;
+}
+
+.swiper.is-voorraad-img.swiper-backface-hidden .swiper-slide {
+  transform: scale(.84) translateZ(0);
+}
+        
+.swiper.is-voorraad-img .swiper-slide.swiper-slide-active {  
+  transform: scale(1) !important;
+  opacity: 1 !important;
+}
+
+.swiper.is-voorraad-img.swiper-backface-hidden .swiper-slide.swiper-slide-active {
+  transform: scale(1) translateZ(0) !important;
+}
