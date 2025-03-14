@@ -422,3 +422,22 @@
 .voorraad_filter-btn:hover .icon-s {
   transform: scale(1.3) rotate(90deg);
 }
+
+/* ------------------------------ AUTO DETAIL PAGINA ------------------------------ */
+
+.opties_tab-item {
+  transition: opacity 0.3s var(--cubic-default);
+}
+
+.opties_tab-item .opties_tab-progress-w {
+  background-color: var(--_theme---background-tertiary);
+  transition: background-color 0.3s var(--cubic-default);
+}
+
+.opties_tab-item:hover {
+  opacity: 0.6;
+}
+
+.opties_tab-item.active .opties_tab-progress-w{
+  background-color: var(--_swatch---dakar-yellow--50);
+}
