@@ -33,6 +33,10 @@
   --_theme---btn--content: var(--_swatch---techno-violet--100);
 } */
 
+#iframe-ros-lease-voorraad {
+  pointer-events: auto !important;
+}
+
 /* ------------------------------ NAV ------------------------------ */
 .nav {
   --nav-transition-duration: 0.5s;
@@ -253,6 +257,10 @@
 .voorraad_item:hover .voorraad_img-cta .btn {
   transform: translateY(0em);
 }
+
+/* ------------------------------ REVIEWS HOVER ------------------------------ */
+
+
 
 /* ------------------------------ SWIPER ------------------------------ */
 

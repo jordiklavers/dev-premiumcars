@@ -7,7 +7,9 @@ import lagrangeBarbaCore from "https://cdn.skypack.dev/@lagrange/barba-core";
 
 gsap.registerPlugin(CustomEase, ScrollTrigger, Flip);
 
-let lenis;
+console.log("LOADED")
+
+// let lenis;
 let transitionOffset = 800; /* ms */
 
 CustomEase.create("main", "0.65, 0.01, 0.05, 0.99");
@@ -187,7 +189,7 @@ function cleanupEventListeners() {
 
 function initFunctions() {
   $(document).ready(function () {
-    initLenis();
+    // initLenis();
     initDetectScrollingDirection();
     initMenu();
     initDynamicCurrentTime();
@@ -232,6 +234,7 @@ function initLenis() {
 }
 
 function initDetectScrollingDirection() {
+  console.log("initDetectScrollingDirection");
   let lastScrollTop = 0;
   const threshold = 10; // Minimal scroll distance to switch to up/down
   const thresholdTop = 50; // Minimal scroll distance from top of window to start
