@@ -180,6 +180,7 @@ function cleanupEventListeners() {
   // Remove menu event listeners to prevent duplicates
   $("[data-menu-toggle]").off("click");
   $(document).off("keydown.menuEscape");
+  $(".menu-link").off("click.menuClose");
 
   // Remove other event listeners as needed
   $(".nav_dropdown").off("mouseenter mouseleave");
@@ -197,6 +198,7 @@ function initFunctions() {
     initVoorraad();
     initVoorraadFilter();
     initTabsComponent();
+    initMultipleImages();
   });
 }
 
@@ -268,6 +270,7 @@ function initMenu() {
   // First clean up any existing event listeners to prevent duplicates
   $("[data-menu-toggle]").off("click");
   $(document).off("keydown.menuEscape");
+  $(".menu-link").off("click.menuClose");
 
   let $navWrap = $(".nav_menu");
   let $navButton = $(".menu-btn");
@@ -353,6 +356,13 @@ function initMenu() {
     });
   });
 
+  // Add click handler for menu links to close menu before navigation
+  $menuLinks.on("click.menuClose", function() {
+    if ($navWrap.attr("data-nav") === "open") {
+      closeNav();
+    }
+  });
+
   // If menu is open, you can close it using the "escape" key
   // Use namespaced event to easily unbind it later
   $(document).on("keydown.menuEscape", function (e) {
@@ -360,7 +370,10 @@ function initMenu() {
       closeNav();
     }
   });
-} 
+
+  // Return the closeNav function so it can be used elsewhere
+  return { closeNav };
+}
 
 function initDynamicCurrentTime() {
   const defaultTimezone = "Europe/Amsterdam";
@@ -397,8 +410,24 @@ function initDynamicCurrentTime() {
 }
 
 function initSwipers() {
+  initGallerySwiper();
+  
+  // Add the updateSlideInfo function
+  function updateSlideInfo(swiper) {
+    const currentSlide = swiper.realIndex + 1;
+    const totalSlides = swiper.slides.length;
+    
+    // Format numbers to always have two digits
+    const formattedCurrent = String(currentSlide).padStart(2, '0');
+    const formattedTotal = String(totalSlides).padStart(2, '0');
+    
+    // Update the slide info elements
+    $("[data-swiper-current]").text(formattedCurrent);
+    $("[data-swiper-total]").text(formattedTotal);
+  }
+
   const reviewsSwiper = new Swiper(".swiper.is-reviews", {
-    speed: 500, // Match our CSS
+    speed: 500,
     slidesPerView: 3,
     spaceBetween: 24,
     createElements: true,
@@ -406,14 +435,16 @@ function initSwipers() {
 
     // Pagination
     pagination: {
-      el: "[data-swiper-pagination]",
+      el: ".swiper-pagination",
       clickable: true,
     },
 
+    // Navigation
     navigation: {
       nextEl: "[data-swiper-next]",
       prevEl: "[data-swiper-prev]",
     },
+
     breakpoints: {
       320: {
         slidesPerView: 1,
@@ -435,35 +466,6 @@ function initSwipers() {
       },
     },
   });
-
-  // Helper function to update slide information
-  function updateSlideInfo(swiper) {
-    const currentSlide = swiper.realIndex + 1;
-
-    // Get the actual number of slides (not duplicated ones)
-    const totalSlides =
-      $(".swiper-slide.is-reviews:not(.swiper-slide-duplicate)").length || 5; // Fallback to 5 if can't determine
-
-    // Format numbers with leading zeros
-    const formatNumber = (num) => num.toString().padStart(2, "0");
-    const formattedCurrentSlide = formatNumber(currentSlide);
-    const formattedTotalSlides = formatNumber(totalSlides);
-
-    // Update DOM elements if they exist
-    const $currentElement = $("[data-swiper-current]");
-    const $totalElement = $("[data-swiper-total]");
-
-    if ($currentElement.length) {
-      $currentElement.text(formattedCurrentSlide);
-    }
-
-    if ($totalElement.length) {
-      $totalElement.text(formattedTotalSlides);
-    }
-
-    // Log for debugging
-    console.log(`Slide ${formattedCurrentSlide} of ${formattedTotalSlides}`);
-  }
 
   const headerImageSwiper = new Swiper(".swiper.is-auto-header", {
     speed: 700,
@@ -488,6 +490,65 @@ function initSwipers() {
       nextEl: "[data-swiper-next]",
       prevEl: "[data-swiper-prev]",
     },
+  });
+}
+
+function initGallerySwiper() {
+  // Find the gallery wrapper and its dynamic lists
+  const galleryWrapper = document.querySelector('.gallery_wrapper');
+  if (!galleryWrapper) return;
+
+  const dynamicLists = galleryWrapper.querySelectorAll('.w-dyn-list');
+  if (dynamicLists.length < 1) return;
+
+  // Create Swiper container and wrapper
+  const swiperContainer = document.createElement('div');
+  swiperContainer.className = 'swiper gallery-swiper';
+  
+  const swiperWrapper = document.createElement('div');
+  swiperWrapper.className = 'swiper-wrapper';
+  swiperContainer.appendChild(swiperWrapper);
+
+  // Add navigation elements
+  const prevButton = document.createElement('div');
+  prevButton.className = 'swiper-button-prev';
+  swiperContainer.appendChild(prevButton);
+
+  const nextButton = document.createElement('div');
+  nextButton.className = 'swiper-button-next';
+  swiperContainer.appendChild(nextButton);
+
+  // Get all images from the dynamic lists
+  const images = galleryWrapper.querySelectorAll('.gallery_image');
+  
+  // Create slides for each image
+  images.forEach(img => {
+    const slide = document.createElement('div');
+    slide.className = 'swiper-slide';
+    
+    // Clone the image to preserve all attributes
+    const newImg = img.cloneNode(true);
+    slide.appendChild(newImg);
+    swiperWrapper.appendChild(slide);
+  });
+
+  // Replace gallery wrapper content with Swiper
+  galleryWrapper.innerHTML = '';
+  galleryWrapper.appendChild(swiperContainer);
+
+  // Initialize Swiper with voorraad-like configuration
+  new Swiper('.gallery-swiper', {
+    slidesPerView: 1.5,
+    centeredSlides: true,
+    loop: true,
+    speed: 500,
+    autoplay: {
+      delay: 5000,
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    }
   });
 }
 
@@ -793,4 +854,8 @@ function initTabsComponent() {
       })
     );
   });
+}
+
+function initMultipleImages() {
+  console.log("initMultipleImages");
 }
