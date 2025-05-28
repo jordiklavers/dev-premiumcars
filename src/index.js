@@ -195,6 +195,7 @@ function initFunctions() {
     initVoorraadFilter();
     initTabsComponent();
     initMultipleImages();
+    initScrollTriggerAnimations();
   });
 }
 
@@ -741,6 +742,66 @@ function initFinsweet() {
       window.fsAttributes[attr].init();
     }
   });
+}
+
+function initScrollTriggerAnimations() {
+  // Home Hero - Parralax
+  $(".section_home-header").each(function() {
+    let trigger = $(this)
+    let textContent = $(this).find(".home-header_col")
+    
+    let tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: trigger,
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+        markers: true,
+      },
+    });
+
+    tl.fromTo(textContent, {
+      y: "0rem",
+    }, {
+      y: "-5rem",
+      ease: "linear",
+    })
+
+    tl.fromTo(trigger, {
+      clipPath: "inset(0% 0% 0% 0%)",
+    }, {
+      clipPath: "inset(0% 0% 10% 0%)",
+      ease: "linear",
+    }, "<")
+    
+  })
+  // Verkoopservice - Parralax
+  $(".section_proces").each(function() {
+    let trigger = $(this)
+    let imageItem = $(this).find(".proces_img-wrap")
+    let textContent = $(this).find(".proces_text-wrap")
+
+    console.log(textContent)
+
+    let tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: trigger,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: true,
+        markers: true,
+      },
+    });
+
+    tl.fromTo(textContent, {
+      y: "5rem",
+    }, {
+      y: "-5rem",
+      ease: "linear",
+    })
+    
+  });
+
 }
 
 // -- Auto Pagina -- //
