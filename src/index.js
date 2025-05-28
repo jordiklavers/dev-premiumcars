@@ -1,13 +1,9 @@
-import gsap from "https://cdn.skypack.dev/gsap";
-import CustomEase from "https://cdn.skypack.dev/gsap/CustomEase";
-import ScrollTrigger from "https://cdn.skypack.dev/gsap/ScrollTrigger";
-import Flip from "https://cdn.skypack.dev/gsap/Flip";
 import studioFreightlenis from "https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/+esm";
 import lagrangeBarbaCore from "https://cdn.skypack.dev/@lagrange/barba-core";
 
 gsap.registerPlugin(CustomEase, ScrollTrigger, Flip);
 
-console.log("LOADED")
+console.log("LOADED");
 
 // let lenis;
 let transitionOffset = 800; /* ms */
@@ -357,7 +353,7 @@ function initMenu() {
   });
 
   // Add click handler for menu links to close menu before navigation
-  $menuLinks.on("click.menuClose", function() {
+  $menuLinks.on("click.menuClose", function () {
     if ($navWrap.attr("data-nav") === "open") {
       closeNav();
     }
@@ -411,16 +407,16 @@ function initDynamicCurrentTime() {
 
 function initSwipers() {
   initGallerySwiper();
-  
+
   // Add the updateSlideInfo function
   function updateSlideInfo(swiper) {
     const currentSlide = swiper.realIndex + 1;
     const totalSlides = swiper.slides.length;
-    
+
     // Format numbers to always have two digits
-    const formattedCurrent = String(currentSlide).padStart(2, '0');
-    const formattedTotal = String(totalSlides).padStart(2, '0');
-    
+    const formattedCurrent = String(currentSlide).padStart(2, "0");
+    const formattedTotal = String(totalSlides).padStart(2, "0");
+
     // Update the slide info elements
     $("[data-swiper-current]").text(formattedCurrent);
     $("[data-swiper-total]").text(formattedTotal);
@@ -495,37 +491,37 @@ function initSwipers() {
 
 function initGallerySwiper() {
   // Find the gallery wrapper and its dynamic lists
-  const galleryWrapper = document.querySelector('.gallery_wrapper');
+  const galleryWrapper = document.querySelector(".gallery_wrapper");
   if (!galleryWrapper) return;
 
-  const dynamicLists = galleryWrapper.querySelectorAll('.w-dyn-list');
+  const dynamicLists = galleryWrapper.querySelectorAll(".w-dyn-list");
   if (dynamicLists.length < 1) return;
 
   // Create Swiper container and wrapper
-  const swiperContainer = document.createElement('div');
-  swiperContainer.className = 'swiper gallery-swiper';
-  
-  const swiperWrapper = document.createElement('div');
-  swiperWrapper.className = 'swiper-wrapper';
+  const swiperContainer = document.createElement("div");
+  swiperContainer.className = "swiper gallery-swiper";
+
+  const swiperWrapper = document.createElement("div");
+  swiperWrapper.className = "swiper-wrapper";
   swiperContainer.appendChild(swiperWrapper);
 
   // Add navigation elements
-  const prevButton = document.createElement('div');
-  prevButton.className = 'swiper-button-prev';
+  const prevButton = document.createElement("div");
+  prevButton.className = "swiper-button-prev";
   swiperContainer.appendChild(prevButton);
 
-  const nextButton = document.createElement('div');
-  nextButton.className = 'swiper-button-next';
+  const nextButton = document.createElement("div");
+  nextButton.className = "swiper-button-next";
   swiperContainer.appendChild(nextButton);
 
   // Get all images from the dynamic lists
-  const images = galleryWrapper.querySelectorAll('.gallery_image');
-  
+  const images = galleryWrapper.querySelectorAll(".gallery_image");
+
   // Create slides for each image
-  images.forEach(img => {
-    const slide = document.createElement('div');
-    slide.className = 'swiper-slide';
-    
+  images.forEach((img) => {
+    const slide = document.createElement("div");
+    slide.className = "swiper-slide";
+
     // Clone the image to preserve all attributes
     const newImg = img.cloneNode(true);
     slide.appendChild(newImg);
@@ -533,11 +529,11 @@ function initGallerySwiper() {
   });
 
   // Replace gallery wrapper content with Swiper
-  galleryWrapper.innerHTML = '';
+  galleryWrapper.innerHTML = "";
   galleryWrapper.appendChild(swiperContainer);
 
   // Initialize Swiper with voorraad-like configuration
-  new Swiper('.gallery-swiper', {
+  new Swiper(".gallery-swiper", {
     slidesPerView: 1.5,
     centeredSlides: true,
     loop: true,
@@ -546,9 +542,9 @@ function initGallerySwiper() {
       delay: 5000,
     },
     navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    }
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
   });
 }
 
