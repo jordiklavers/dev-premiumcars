@@ -33,10 +33,6 @@
   --_theme---btn--content: var(--_swatch---techno-violet--100);
 } */
 
-#iframe-ros-lease-voorraad {
-  pointer-events: auto !important;
-}
-
 /* ------------------------------ NAV ------------------------------ */
 .nav {
   --nav-transition-duration: 0.5s;
@@ -132,10 +128,15 @@
     transform 0.5s var(--cubic-default), opacity 0.5s var(--cubic-default);
 }
 
-.nav_dropdown:hover .nav_dropdown-menu {
+[data-aanbod-dropdown-status="active"] .nav_dropdown-menu {
   visibility: visible;
   transform: translateY(0%);
   opacity: 1;
+}
+
+[data-aanbod-dropdown-status="not-active"] .nav_dropdown-menu {
+  transition: visibility 0.2s var(--cubic-default),
+    transform 0.5s var(--cubic-default), opacity 0.2s var(--cubic-default);
 }
 
 .menu-link p {
@@ -180,6 +181,67 @@
 .nav_link:hover::before {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+/* ------------------------------ IMAGE CUTOUT ------------------------------ */
+
+[data-img-cutout] {
+  --inset: 4rem; /* dit kun je aanpassen voor grootte */
+}
+
+[data-img-cutout="bottomright"] {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--inset)),
+    calc(100% - var(--inset)) 100%,
+    0 100%
+  );
+}
+
+[data-img-cutout="bottomleft"] {
+  clip-path: polygon(
+    var(--inset) 100%,
+    100% 100%,
+    100% 0,
+    0 0,
+    0 calc(100% - var(--inset))
+  );
+}
+
+[data-img-cutout="topright"] {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--inset)) 0,
+    100% var(--inset),
+    100% 100%,
+    0 100%
+  );
+}
+
+[data-img-cutout="topleft"] {
+  clip-path: polygon(var(--inset) 0, 100% 0, 100% 100%, 0 100%, 0 var(--inset));
+}
+
+/* ------------------------------ BREADCRUMBS ------------------------------ */
+.breadcrumbs_item a {
+  text-decoration: none;
+}
+
+.breadcrumbs_item:not(:last-child)::after {
+  content: "/";
+  margin-left: 0.5em;
+}
+
+.breadcrumbs_item {
+  opacity: 0.4;
+  font-weight: 500;
+}
+
+.breadcrumbs_item:last-child {
+  color: white;
+  font-weight: 500;
+  opacity: 1;
 }
 
 /* ------------------------------ BUTTONS ------------------------------ */
@@ -265,7 +327,6 @@
   transform-origin: center;
 }
 
-
 .swiper-review_content {
   transform: translateY(100%);
   opacity: 0;
@@ -284,8 +345,6 @@
 .swiper-slide.is-reviews:hover img {
   transform: scale(1.05) rotate(0.001deg);
 }
-
-
 
 /* ------------------------------ SWIPER ------------------------------ */
 
@@ -373,6 +432,64 @@
 .swiper.is-voorraad-img.swiper-backface-hidden
   .swiper-slide.swiper-slide-active {
   transform: scale(1) translateZ(0) !important;
+}
+
+/* ----------------- AFLEVERPAKETTEN ----------------- */
+
+.afleverpakket_item.is-highlight::after {
+  content: "Meeste waarde";
+  position: absolute;
+  top: 0;
+  background-color: var(--_swatch---dakar-yellow--50);
+  padding: 0.5em 1em;
+  border-radius: 100em;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  font-size: 0.875em;
+  font-weight: 500;
+  color: var(--_swatch---techno-violet--100);
+}
+
+.afleverpakket_item {
+  transition: transform 0.3s var(--cubic-default);
+}
+
+.afleverpakket_item:hover {
+  transform: translateY(-1.5em);
+}
+
+.afleverpakket_list li {
+  display: flex;
+  align-items: center;
+}
+
+.afleverpakket_list li::before {
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z' stroke='%23dac46f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' /%3E%3Cpath d='M15 9.5L10.5 15L8.5 13' stroke='%23dac46f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' /%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 0.5em;
+}
+
+/* ----------------- FORM VALIDATION ----------------- */
+
+/* Field: Error */
+[data-validate].is--error input,
+[data-validate].is--error textarea {
+  border-color: #ff4c24;
+}
+
+[data-validate].is--error .form-field-icon.is--error {
+  opacity: 1;
+}
+
+/* Field: Success */
+[data-validate].is--success .form-field-icon.is--success {
+  opacity: 1;
 }
 
 /* ------------------------------ FOOTER ------------------------------ */
@@ -471,7 +588,7 @@
   opacity: 0.6;
 }
 
-.opties_tab-item.active .opties_tab-progress-w{
+.opties_tab-item.active .opties_tab-progress-w {
   background-color: var(--_swatch---dakar-yellow--50);
 }
 
@@ -545,7 +662,7 @@
     width: 36px;
     height: 36px;
   }
-  
+
   .gallery-swiper .swiper-button-next:after,
   .gallery-swiper .swiper-button-prev:after {
     font-size: 16px;

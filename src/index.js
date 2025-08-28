@@ -3,15 +3,11 @@ import lagrangeBarbaCore from "https://cdn.skypack.dev/@lagrange/barba-core";
 
 gsap.registerPlugin(CustomEase, ScrollTrigger, Flip);
 
-console.log("LOADED");
-
 // let lenis;
 let transitionOffset = 800; /* ms */
 
 CustomEase.create("main", "0.65, 0.01, 0.05, 0.99");
 gsap.defaults({ ease: "main" });
-
-initFunctions();
 
 initPageTransitions();
 
@@ -100,15 +96,17 @@ function initPageTransitions() {
   //
   async function commonLeaveBeforeOffset(data) {
     //
-    console.log("commonLeaveBeforeOffset");
     pageTransitionIn(data.current);
     $("[data-scrolling-direction]").attr("data-scrolling-direction", "up");
     $("[data-scrolling-started]").attr("data-scrolling-started", "false");
+    $("[data-aanbod-dropdown-status]").attr(
+      "data-aanbod-dropdown-status",
+      "not-active"
+    );
   }
 
   async function commonLeaveAfterOffset(data) {
     //
-    console.log("commonLeaveAfterOffset");
     await delay(10);
     $("[data-scrolling-direction]").attr("data-scrolling-direction", "up");
     $("[data-scrolling-started]").attr("data-scrolling-started", "false");
@@ -116,23 +114,20 @@ function initPageTransitions() {
 
   async function commonEnter(data) {
     //
-    console.log("commonEnter");
     pageTransitionOut(data.next);
   }
 
   async function commonBeforeEnter(data) {
     //
-    console.log("commonBeforeEnter");
     initResetWebflow(data);
-    initFunctions();
   }
 
   async function commonAfterEnter(data) {
     //
-    console.log("commonAfterEnter");
     window.scrollTo(0, 0);
     ScrollTrigger.refresh();
     initFinsweet();
+    initFunctions();
   }
 
   lagrangeBarbaCore.init({
@@ -185,18 +180,19 @@ function cleanupEventListeners() {
 }
 
 function initFunctions() {
-  $(document).ready(function () {
-    // initLenis();
-    initDetectScrollingDirection();
-    initMenu();
-    initDynamicCurrentTime();
-    initSwipers();
-    initVoorraad();
-    initVoorraadFilter();
-    initTabsComponent();
-    initMultipleImages();
-    initScrollTriggerAnimations();
-  });
+  initLenis();
+  initGlobalParallax();
+  initDetectScrollingDirection();
+  initMenu();
+  initMenuDropdownHover();
+  initDynamicCurrentTime();
+  initSwipers();
+  initVoorraad();
+  initVoorraadFilter();
+  initTabsComponent();
+  initScrollTriggerAnimations();
+  initBasicFormValidation();
+  initMWG031();
 }
 
 function delay(n) {
@@ -233,7 +229,6 @@ function initLenis() {
 }
 
 function initDetectScrollingDirection() {
-  console.log("initDetectScrollingDirection");
   let lastScrollTop = 0;
   const threshold = 10; // Minimal scroll distance to switch to up/down
   const thresholdTop = 50; // Minimal scroll distance from top of window to start
@@ -260,10 +255,90 @@ function initDetectScrollingDirection() {
     }
   });
 }
+gsap.registerPlugin(ScrollTrigger);
+
+function initGlobalParallax() {
+  const mm = gsap.matchMedia();
+
+  mm.add(
+    {
+      isMobile: "(max-width:479px)",
+      isMobileLandscape: "(max-width:767px)",
+      isTablet: "(max-width:991px)",
+      isDesktop: "(min-width:992px)",
+    },
+    (context) => {
+      const { isMobile, isMobileLandscape, isTablet } = context.conditions;
+
+      const ctx = gsap.context(() => {
+        document
+          .querySelectorAll('[data-parallax="trigger"]')
+          .forEach((trigger) => {
+            // Check if this trigger has to be disabled on smaller breakpoints
+            const disable = trigger.getAttribute("data-parallax-disable");
+            if (
+              (disable === "mobile" && isMobile) ||
+              (disable === "mobileLandscape" && isMobileLandscape) ||
+              (disable === "tablet" && isTablet)
+            ) {
+              return;
+            }
+
+            // Optional: you can target an element inside a trigger if necessary
+            const target =
+              trigger.querySelector('[data-parallax="target"]') || trigger;
+
+            // Get the direction value to decide between xPercent or yPercent tween
+            const direction =
+              trigger.getAttribute("data-parallax-direction") || "vertical";
+            const prop = direction === "horizontal" ? "xPercent" : "yPercent";
+
+            // Get the scrub value, our default is 'true' because that feels nice with Lenis
+            const scrubAttr = trigger.getAttribute("data-parallax-scrub");
+            const scrub = scrubAttr ? parseFloat(scrubAttr) : true;
+
+            // Get the start position in %
+            const startAttr = trigger.getAttribute("data-parallax-start");
+            const startVal = startAttr !== null ? parseFloat(startAttr) : 20;
+
+            // Get the end position in %
+            const endAttr = trigger.getAttribute("data-parallax-end");
+            const endVal = endAttr !== null ? parseFloat(endAttr) : -20;
+
+            // Get the start value of the ScrollTrigger
+            const scrollStartRaw =
+              trigger.getAttribute("data-parallax-scroll-start") ||
+              "top bottom";
+            const scrollStart = `clamp(${scrollStartRaw})`;
+
+            // Get the end value of the ScrollTrigger
+            const scrollEndRaw =
+              trigger.getAttribute("data-parallax-scroll-end") || "bottom top";
+            const scrollEnd = `clamp(${scrollEndRaw})`;
+
+            gsap.fromTo(
+              target,
+              { [prop]: startVal },
+              {
+                [prop]: endVal,
+                ease: "none",
+                scrollTrigger: {
+                  trigger,
+                  start: scrollStart,
+                  end: scrollEnd,
+                  scrub,
+                },
+              }
+            );
+          });
+      });
+
+      return () => ctx.revert();
+    }
+  );
+}
 
 function initMenu() {
-  console.log("menu init");
-
   // First clean up any existing event listeners to prevent duplicates
   $("[data-menu-toggle]").off("click");
   $(document).off("keydown.menuEscape");
@@ -370,6 +445,29 @@ function initMenu() {
 
   // Return the closeNav function so it can be used elsewhere
   return { closeNav };
+}
+
+function initMenuDropdownHover() {
+  $('[data-aanbod-dropdown-action="hover"]')
+    .on("mouseenter", function () {
+      if (!window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+        if (
+          $(".nav-secondary").attr("data-aanbod-dropdown-status") ===
+          "not-active"
+        ) {
+          $(".nav-secondary").attr("data-aanbod-dropdown-status", "active");
+        }
+      }
+    })
+    .on("mouseleave", function () {
+      if (!window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+        if (
+          $(".nav-secondary").attr("data-aanbod-dropdown-status") === "active"
+        ) {
+          $(".nav-secondary").attr("data-aanbod-dropdown-status", "not-active");
+        }
+      }
+    });
 }
 
 function initDynamicCurrentTime() {
@@ -535,7 +633,7 @@ function initGallerySwiper() {
 
   // Initialize Swiper with voorraad-like configuration
   new Swiper(".gallery-swiper", {
-    slidesPerView: 1.5,
+    slidesPerView: 1.15,
     centeredSlides: true,
     loop: true,
     speed: 500,
@@ -552,8 +650,6 @@ function initGallerySwiper() {
 function initVoorraad() {
   // Count the number of voorraad items
   const voorraadItems = $(".voorraad-row.grid-main").children().length;
-
-  console.log(voorraadItems);
 
   // Format the number with leading zeros if needed
   const formatNumber = (num) => num.toString().padStart(2, "0");
@@ -579,7 +675,6 @@ function initVoorraadViewSwitch() {
 
   $viewSwitchButtons.on("click", function () {
     handleViewChange();
-    console.log("clicked");
   });
 
   function handleViewChange() {
@@ -738,7 +833,6 @@ function initFinsweet() {
       window.fsAttributes[attr] &&
       typeof window.fsAttributes[attr].init === "function"
     ) {
-      console.log(`Initializing ${attr}`);
       window.fsAttributes[attr].init();
     }
   });
@@ -746,42 +840,47 @@ function initFinsweet() {
 
 function initScrollTriggerAnimations() {
   // Home Hero - Parralax
-  $(".section_home-header").each(function() {
-    let trigger = $(this)
-    let textContent = $(this).find(".home-header_col")
-    
+  $(".section_home-header").each(function () {
+    let trigger = $(this);
+    let textContent = $(this).find(".home-header_col");
+
     let tl = gsap.timeline({
       scrollTrigger: {
         trigger: trigger,
         start: "top top",
         end: "bottom top",
         scrub: true,
-        markers: true,
       },
     });
 
-    tl.fromTo(textContent, {
-      y: "0rem",
-    }, {
-      y: "-5rem",
-      ease: "linear",
-    })
+    tl.fromTo(
+      textContent,
+      {
+        y: "0rem",
+      },
+      {
+        y: "-5rem",
+        ease: "linear",
+      }
+    );
 
-    tl.fromTo(trigger, {
-      clipPath: "inset(0% 0% 0% 0%)",
-    }, {
-      clipPath: "inset(0% 0% 10% 0%)",
-      ease: "linear",
-    }, "<")
-    
-  })
+    tl.fromTo(
+      trigger,
+      {
+        clipPath: "inset(0% 0% 0% 0%)",
+      },
+      {
+        clipPath: "inset(0% 0% 10% 0%)",
+        ease: "linear",
+      },
+      "<"
+    );
+  });
   // Verkoopservice - Parralax
-  $(".section_proces").each(function() {
-    let trigger = $(this)
-    let imageItem = $(this).find(".proces_img-wrap")
-    let textContent = $(this).find(".proces_text-wrap")
-
-    console.log(textContent)
+  $(".section_proces").each(function () {
+    let trigger = $(this);
+    let imageItem = $(this).find(".proces_img-wrap");
+    let textContent = $(this).find(".proces_text-wrap");
 
     let tl = gsap.timeline({
       scrollTrigger: {
@@ -789,19 +888,178 @@ function initScrollTriggerAnimations() {
         start: "top bottom",
         end: "bottom top",
         scrub: true,
-        markers: true,
       },
     });
 
-    tl.fromTo(textContent, {
-      y: "5rem",
-    }, {
-      y: "-5rem",
-      ease: "linear",
-    })
-    
+    tl.fromTo(
+      textContent,
+      {
+        y: "5rem",
+      },
+      {
+        y: "-5rem",
+        ease: "linear",
+      }
+    );
   });
+}
 
+function initBasicFormValidation() {
+  const forms = document.querySelectorAll("[data-form-validate]");
+
+  forms.forEach((form) => {
+    const fields = form.querySelectorAll(
+      "[data-validate] input, [data-validate] textarea"
+    );
+    const submitButtonDiv = form.querySelector("[data-submit]"); // The div wrapping the submit button
+    const submitInput = submitButtonDiv.querySelector('input[type="submit"]'); // The actual submit button
+
+    // Capture the form load time
+    const formLoadTime = new Date().getTime(); // Timestamp when the form was loaded
+
+    // Function to validate individual fields (input or textarea)
+    const validateField = (field) => {
+      const parent = field.closest("[data-validate]"); // Get the parent div
+      const minLength = field.getAttribute("min");
+      const maxLength = field.getAttribute("max");
+      const type = field.getAttribute("type");
+      let isValid = true;
+
+      // Check if the field has content
+      if (field.value.trim() !== "") {
+        parent.classList.add("is--filled");
+      } else {
+        parent.classList.remove("is--filled");
+      }
+
+      // Validation logic for min and max length
+      if (minLength && field.value.length < minLength) {
+        isValid = false;
+      }
+
+      if (maxLength && field.value.length > maxLength) {
+        isValid = false;
+      }
+
+      // Validation logic for email input type
+      if (type === "email" && !/\S+@\S+\.\S+/.test(field.value)) {
+        isValid = false;
+      }
+
+      // Add or remove success/error classes on the parent div
+      if (isValid) {
+        parent.classList.remove("is--error");
+        parent.classList.add("is--success");
+      } else {
+        parent.classList.remove("is--success");
+        parent.classList.add("is--error");
+      }
+
+      return isValid;
+    };
+
+    // Function to start live validation for a field
+    const startLiveValidation = (field) => {
+      field.addEventListener("input", function () {
+        validateField(field);
+      });
+    };
+
+    // Function to validate and start live validation for all fields, focusing on the first field with an error
+    const validateAndStartLiveValidationForAll = () => {
+      let allValid = true;
+      let firstInvalidField = null;
+
+      fields.forEach((field) => {
+        const valid = validateField(field);
+        if (!valid && !firstInvalidField) {
+          firstInvalidField = field; // Track the first invalid field
+        }
+        if (!valid) {
+          allValid = false;
+        }
+        startLiveValidation(field); // Start live validation for all fields
+      });
+
+      // If there is an invalid field, focus on the first one
+      if (firstInvalidField) {
+        firstInvalidField.focus();
+      }
+
+      return allValid;
+    };
+
+    // Anti-spam: Check if form was filled too quickly
+    const isSpam = () => {
+      const currentTime = new Date().getTime();
+      const timeDifference = (currentTime - formLoadTime) / 1000; // Convert milliseconds to seconds
+      return timeDifference < 5; // Return true if form is filled within 5 seconds
+    };
+
+    // Handle clicking the custom submit button
+    submitButtonDiv.addEventListener("click", function () {
+      // Validate the form first
+      if (validateAndStartLiveValidationForAll()) {
+        // Only check for spam after all fields are valid
+        if (isSpam()) {
+          alert("Form submitted too quickly. Please try again.");
+          return; // Stop form submission
+        }
+        submitInput.click(); // Simulate a click on the <input type="submit">
+      }
+    });
+
+    // Handle pressing the "Enter" key
+    form.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" && event.target.tagName !== "TEXTAREA") {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Validate the form first
+        if (validateAndStartLiveValidationForAll()) {
+          // Only check for spam after all fields are valid
+          if (isSpam()) {
+            alert("Form submitted too quickly. Please try again.");
+            return; // Stop form submission
+          }
+          submitInput.click(); // Trigger our custom form submission
+        }
+      }
+    });
+  });
+}
+
+function initMWG031() {
+  const slides = document.querySelectorAll(".mwg_effect031 .slide");
+
+  slides.forEach((slide) => {
+    const contentWrapper = slide.querySelector(".content-wrapper");
+    const content = slide.querySelector(".content");
+
+    gsap.to(content, {
+      rotationZ: (Math.random() - 0.5) * 10, // RotationZ between -5 and 5 degrees
+      scale: 0.7, // Slight reduction of the content
+      rotationX: 40,
+      ease: "power1.in", // Starts gradually
+      scrollTrigger: {
+        pin: contentWrapper, // contentWrapper is pinned during the animation
+        trigger: slide, // Listens to the slide’s position
+        start: "top 0%", // Starts when its top reaches the top of the viewport
+        end: "+=" + window.innerHeight, // Ends 100vh later
+        scrub: true, // Progresses with the scroll
+      },
+    });
+
+    gsap.to(content, {
+      autoAlpha: 0, // Ends at opacity: 0 and visibility: hidden
+      ease: "power1.in", // Starts gradually
+      scrollTrigger: {
+        trigger: content, // Listens to the position of content
+        start: "top -80%", // Starts when the top exceeds 80% of the viewport
+        end: "+=" + 0.2 * window.innerHeight, // Ends 20% later
+        scrub: true, // Progresses with the scroll
+      },
+    });
+  });
 }
 
 // -- Auto Pagina -- //
@@ -911,8 +1169,4 @@ function initTabsComponent() {
       })
     );
   });
-}
-
-function initMultipleImages() {
-  console.log("initMultipleImages");
 }
