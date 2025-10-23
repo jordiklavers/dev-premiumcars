@@ -1,5 +1,4 @@
 import studioFreightlenis from "https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/+esm";
-import lagrangeBarbaCore from "https://cdn.skypack.dev/@lagrange/barba-core";
 
 gsap.registerPlugin(CustomEase, ScrollTrigger, Flip);
 
@@ -9,175 +8,9 @@ let transitionOffset = 800; /* ms */
 CustomEase.create("main", "0.65, 0.01, 0.05, 0.99");
 gsap.defaults({ ease: "main" });
 
-initPageTransitions();
-
-function pageTransitionIn() {
-  //
-  let tl = gsap.timeline();
-
-  if (
-    $("[data-animation-transition='fade'], [data-animation-transition='slide']")
-      .length
-  ) {
-    tl.to(
-      "[data-animation-transition='fade'], [data-animation-transition='slide']",
-      {
-        autoAlpha: 0,
-        ease: "none",
-        duration: 0.3,
-      }
-    );
-  }
-
-  if ($("[data-animation-transition='fade-up']").length) {
-    tl.to(
-      "[data-animation-transition='fade-up']",
-      {
-        autoAlpha: 0,
-        y: "-100%",
-        ease: "main",
-        duration: 0.8,
-        stagger: 0.075,
-      },
-      "<"
-    );
-  }
-}
-
-function pageTransitionOut() {
-  //
-
-  let tl = gsap.timeline();
-  if ($("[data-animation-transition='fade-up']").length) {
-    tl.from(
-      "[data-animation-transition='fade-up']",
-      {
-        autoAlpha: 0,
-        y: "100%",
-        ease: "main",
-        duration: 0.8,
-        stagger: 0.1,
-      },
-      "-0.1"
-    );
-  }
-
-  if ($("[data-animation-transition='fade']").length) {
-    tl.from(
-      "[data-animation-transition='fade']",
-      {
-        autoAlpha: 0,
-        rotate: 0.001,
-        ease: "jitter-smooth",
-        duration: 0.5,
-        clearProps: "all",
-      },
-      "<+50%"
-    );
-  }
-}
-
-function initPageTransitions() {
-  history.scrollRestoration = "manual";
-
-  lagrangeBarbaCore.hooks.afterEnter(() => {
-    window.scrollTo(0, 0);
-    ScrollTrigger.refresh();
-    // Ensure menu is initialized after each page transition
-    initMenu();
-  });
-
-  lagrangeBarbaCore.hooks.leave(() => {
-    // Clean up event listeners before leaving the page
-    cleanupEventListeners();
-    initFunctions();
-  });
-
-  //
-  async function commonLeaveBeforeOffset(data) {
-    //
-    pageTransitionIn(data.current);
-    $("[data-scrolling-direction]").attr("data-scrolling-direction", "up");
-    $("[data-scrolling-started]").attr("data-scrolling-started", "false");
-    $("[data-aanbod-dropdown-status]").attr(
-      "data-aanbod-dropdown-status",
-      "not-active"
-    );
-  }
-
-  async function commonLeaveAfterOffset(data) {
-    //
-    await delay(10);
-    $("[data-scrolling-direction]").attr("data-scrolling-direction", "up");
-    $("[data-scrolling-started]").attr("data-scrolling-started", "false");
-  }
-
-  async function commonEnter(data) {
-    //
-    pageTransitionOut(data.next);
-  }
-
-  async function commonBeforeEnter(data) {
-    //
-    initResetWebflow(data);
-  }
-
-  async function commonAfterEnter(data) {
-    //
-    window.scrollTo(0, 0);
-    ScrollTrigger.refresh();
-    initFinsweet();
-    initFunctions();
-  }
-
-  lagrangeBarbaCore.init({
-    sync: true,
-    debug: true,
-    timeout: 7000,
-    preventRunning: true,
-    prevent: function ({ el }) {
-      if (el.hasAttribute("data-barba-prevent")) {
-        return true;
-      }
-    },
-    transitions: [
-      {
-        name: "default",
-        once(data) {
-          initSmoothScroll(data.next.container);
-          initFunctions();
-          // Initialize Finsweet attributes on first load only
-        },
-        async leave(data) {
-          await commonLeaveBeforeOffset(data);
-          await delay(transitionOffset);
-          await commonLeaveAfterOffset(data);
-        },
-        async enter(data) {
-          await commonEnter(data);
-        },
-        async beforeEnter(data) {
-          await commonBeforeEnter(data);
-        },
-        async afterEnter(data) {
-          await commonAfterEnter(data);
-        },
-      },
-    ],
-  });
-}
-
-function cleanupEventListeners() {
-  // Remove menu event listeners to prevent duplicates
-  $("[data-menu-toggle]").off("click");
-  $(document).off("keydown.menuEscape");
-  $(".menu-link").off("click.menuClose");
-
-  // Remove other event listeners as needed
-  $(".nav_dropdown").off("mouseenter mouseleave");
-  $(".voorraad_list-switch-item").off("click");
-  $("[data-filter-menu-toggle]").off("click");
-}
+$("document").ready(function () {
+  initFunctions();
+});
 
 function initFunctions() {
   initLenis();
@@ -190,33 +23,10 @@ function initFunctions() {
   initVoorraad();
   initVoorraadFilter();
   initTabsComponent();
+  initGallerySwiper();
   initScrollTriggerAnimations();
   initBasicFormValidation();
   initMWG031();
-}
-
-function delay(n) {
-  n = n || 2000;
-  return new Promise((done) => {
-    setTimeout(() => {
-      done();
-    }, n);
-  });
-}
-
-function initResetWebflow(data) {
-  let parser = new DOMParser();
-  let dom = parser.parseFromString(data.next.html, "text/html");
-  let webflowPageId = dom.querySelector("html").getAttribute("data-wf-page");
-  $("html").attr("data-wf-page", webflowPageId);
-  window.Webflow.destroy();
-  window.Webflow.ready();
-  // window.Webflow.require("ix2").init();
-}
-
-function initSmoothScroll(container) {
-  initLenis();
-  ScrollTrigger.refresh();
 }
 
 function initLenis() {
@@ -255,7 +65,6 @@ function initDetectScrollingDirection() {
     }
   });
 }
-gsap.registerPlugin(ScrollTrigger);
 
 function initGlobalParallax() {
   const mm = gsap.matchMedia();
@@ -505,8 +314,6 @@ function initDynamicCurrentTime() {
 }
 
 function initSwipers() {
-  initGallerySwiper();
-
   // Add the updateSlideInfo function
   function updateSlideInfo(swiper) {
     const currentSlide = swiper.realIndex + 1;
@@ -571,6 +378,17 @@ function initSwipers() {
       disableOnInteraction: false,
     },
     loop: true,
+    breakpoints: {
+      320: {
+        slidesPerView: 1.15,
+      },
+      640: {
+        slidesPerView: 1.5,
+      },
+    },
+    1024: {
+      slidesPerView: 1.5,
+    },
   });
 
   const autoImageSwiper = new Swiper(".swiper.is-voorraad-img", {
@@ -633,7 +451,7 @@ function initGallerySwiper() {
 
   // Initialize Swiper with voorraad-like configuration
   new Swiper(".gallery-swiper", {
-    slidesPerView: 1.15,
+    slidesPerView: 1.75,
     centeredSlides: true,
     loop: true,
     speed: 500,
